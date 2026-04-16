@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}Članak — BH Fantasy Liga{% endblock %}
+
+{% block content %}
+
+<div class="main-content">
+    
+    <!-- Article header -->
+    <div class="article-hero">
+        <img src="{{ url_for('static', filename='images/BHFantasyLiga.png') }}" alt="Article cover" class="article-hero__image">
+        <div class="article-hero__overlay"></div>
+        <div class="article-hero__content">
+            <div class="article-hero__meta">
+                <span class="article-hero__category">Vijesti</span>
+                <span class="article-hero__date">7. Apr 2026</span>
+            </div>
+            <h1 class="article-hero__title">Kolo 15 je počelo sa velikim iznenađenjima i dramatičnim preokretima</h1>
+        </div>
+    </div>
+
+    <!-- Article body -->
+    <div class="page-wrapper">
+        <article class="article">
+
+            <!-- Article Meta -->
+            <div class="article__meta">
+                <div class="article__author">
+                    <div class="article__avatar">KX</div>
+                    <div class="article__author-info">
+                        <p class="article__author-name">Klix.ba</p>
+                        <p class="article__author-date">7. April 2026, 14:30</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Article content -->
+            <div class="article__content">
+                <p>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro natus similique, officiis sapiente culpa nihil veniam quisquam alias eveniet reiciendis. Deleniti, vitae expedita. Itaque maxime magnam mollitia possimus similique aut?
+                </p>
+
+                <h2>TEST NASLOV</h2>
+                <p>
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. Explicabo aut repudiandae architecto eligendi laborum nemo sed veritatis pariatur tempora ullam optio maiores, ipsam vero quisquam autem eos nam illum voluptate?
+                </p>
+
+                <p>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Non, nesciunt beatae blanditiis, dicta, molestias voluptatum adipisci autem aspernatur explicabo facere earum officiis nostrum. Deleniti placeat assumenda ad qui, temporibus culpa!
+                </p>
+
+                <blockquote class="article__quote">
+                    "Lorem ipsum dolor sit amet consectetur, adipisicing elit."
+                </blockquote>
+
+                <h2>TEST NASLOV</h2>
+                <p>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam dolores deserunt tempore, veniam est porro quo, reprehenderit id aperiam nisi quia temporibus corporis quasi sit pariatur similique dolorem eius voluptates?
+                </p>
+
+                <ul class="article__list">
+                    <li><strong>Edin Džeko</strong> — 2 gola i 1 asistencija</li>
+                    <li><strong>Nikola Vasilj</strong> — 5 odbrana</li>
+                    <li><strong>Renan Oliviera</strong> — 7 uspješnih driblinga</li>
+                </ul>
+
+                <p>
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. In similique sit sunt officiis, cupiditate dolor, repellendus maxime at voluptate corrupti hic voluptatum dignissimos! Voluptate eum nam, iste esse optio autem.
+                </p>
+
+                <h2>TEST NASLOV</h2>
+                <p>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Sed quas necessitatibus consectetur distinctio nostrum ratione, eaque repellat quis maxime quibusdam recusandae omnis vero laudantium esse, soluta minus? Ullam, provident illum?
+                </p>
+
+                <p>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit culpa mollitia cum unde, totam ratione vero facilis minima saepe. Quae deserunt a suscipit reiciendis iusto, sit corrupti est quia praesentium.
+                </p>
+            </div>
+
+            <!-- Article tags -->
+            <div class="article__tags">
+                <a href="#" class="article__tag">#Liga</a>
+                <a href="#" class="article__tag">#Fudbal</a>
+                <a href="#" class="article__tag">#Rezultati</a>
+                <a href="#" class="article__tag">#Fantasy</a>
+            </div>
+
+            <!-- Article actions -->
+            <div class="article__actions">
+                <a href="{{ url_for('news.feed') }}" class="btn btn--outline">
+                    <i class="fas fa-arrow-left"></i> Nazad na vijesti
+                </a>
+            </div>
+
+        </article>
+
+        <!-- Related articles -->
+        <div class="related-articles">
+            <h2 class="related-articles__title">Povezani članci</h2>
+            <div class="related-articles__grid">
+
+                <article class="related-card">
+                    <div class="related-card__image">
+                        <img src="{{ url_for('static', filename='images/BHFantasyLiga.png') }}" alt="Related article">
+                    </div>
+                    <div class="related-card__content">
+                        <h3 class="related-card__title">Intervju sa najboljim strijelcem sezone</h3>
+                        <p class="related-card__date">6. Apr 2026</p>
+                        <a href="{{ url_for('news.article', article_id=1) }}" class="related-card__link">Pročitaj <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+
+                <article class="related-card">
+                    <div class="related-card__image">
+                        <img src="{{ url_for('static', filename='images/BHFantasyLiga.png') }}" alt="Related article">
+                    </div>
+                    <div class="related-card__content">
+                        <h3 class="related-card__title">Vruća transfer tržišta: Analiza mogućih transfera</h3>
+                        <p class="related-card__date">5. Apr 2026</p>
+                        <a href="{{ url_for('news.article', article_id=1) }}" class="related-card__link">Pročitaj <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+
+                <article class="related-card">
+                    <div class="related-card__image">
+                        <img src="{{ url_for('static', filename='images/BHFantasyLiga.png') }}" alt="Related article">
+                    </div>
+                    <div class="related-card__content">
+                        <h3 class="related-card__title">Taktička analiza: Kako se mijenja liga ove sezone</h3>
+                        <p class="related-card__date">4. Apr 2026</p>
+                        <a href="{{ url_for('news.article', article_id=1) }}" class="related-card__link">Pročitaj <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block title %}Kolo — BH Fantasy Liga{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-wrapper">
+
+        <!-- Page header -->
+        <div class="page-header">
+            <h1 class="page-header__title">Kolo 15</h1>
+            <p class="page-header__sub">Pregled utakmica i rezultata trenutnog kola — WWin Liga BiH</p>
+        </div>
+
+        <!-- Gameweek status bar -->
+        <div class="gameweek-status">
+            <div class="gameweek-status__item">
+                <span class="gameweek-status__label">Status</span>
+                <span class="badge badge--success">Aktivno</span>
+            </div>
+            <div class="gameweek-status__item">
+                <span class="gameweek-status__label">Deadline</span>
+                <span class="gameweek-status__value">18. Apr 2026, 17:00</span>
+            </div>
+            <div class="gameweek-status__item">
+                <span class="gameweek-status__label">Vaši poeni</span>
+                <span class="gameweek-status__value text-gold">52 pts</span>
+            </div>
+            <div class="gameweek-status__item">
+                <span class="gameweek-status__label">Prosječni poeni</span>
+                <span class="gameweek-status__value">44 pts</span>
+            </div>
+        </div>
+
+        <!-- Fixtures -->
+        <div class="gameweek-section">
+            <h2 class="gameweek-section__title">Utakmice</h2>
+
+            <div class="fixtures-list">
+
+                <!-- Fixture 1 -->
+                <div class="fixture-card fixture-card--finished">
+                    <div class="fixture-card__team fixture-card__team--home">
+                        <span class="fixture-card__team-name">FK Radnik</span>
+                        <span class="fixture-card__team-short">RAD</span>
+                    </div>
+                    <div class="fixture-card__score">
+                        <span class="fixture-card__score-value">0 — 3</span>
+                        <span class="fixture-card__score-status">Završeno</span>
+                    </div>
+                    <div class="fixture-card__team fixture-card__team--away">
+                        <span class="fixture-card__team-name">FK Željezničar</span>
+                        <span class="fixture-card__team-short">ŽEL</span>
+                    </div>
+                </div>
+
+                <!-- Fixture 2 -->
+                <div class="fixture-card fixture-card--finished">
+                    <div class="fixture-card__team fixture-card__team--home">
+                        <span class="fixture-card__team-name">FK Sarajevo</span>
+                        <span class="fixture-card__team-short">SAR</span>
+                    </div>
+                    <div class="fixture-card__score">
+                        <span class="fixture-card__score-value">2 — 1</span>
+                        <span class="fixture-card__score-status">Završeno</span>
+                    </div>
+                    <div class="fixture-card__team fixture-card__team--away">
+                        <span class="fixture-card__team-name">HŠK Zrinjski</span>
+                        <span class="fixture-card__team-short">ZRI</span>
+                    </div>
+                </div>
+
+                <!-- Fixture 3 -->
+                <div class="fixture-card fixture-card--upcoming">
+                    <div class="fixture-card__team fixture-card__team--home">
+                        <span class="fixture-card__team-name">FK Velež Mostar</span>
+                        <span class="fixture-card__team-short">VEL</span>
+                    </div>
+                    <div class="fixture-card__score">
+                        <span class="fixture-card__score-value">vs</span>
+                        <span class="fixture-card__score-status">18. Apr, 17:00</span>
+                    </div>
+                    <div class="fixture-card__team fixture-card__team--away">
+                        <span class="fixture-card__team-name">FK Sloga Doboj</span>
+                        <span class="fixture-card__team-short">SLO</span>
+                    </div>
+                </div>
+
+                <!-- Fixture 4 -->
+                <div class="fixture-card fixture-card--upcoming">
+                    <div class="fixture-card__team fixture-card__team--home">
+                        <span class="fixture-card__team-name">FK Rudar</span>
+                        <span class="fixture-card__team-short">RUD</span>
+                    </div>
+                    <div class="fixture-card__score">
+                        <span class="fixture-card__score-value">vs</span>
+                        <span class="fixture-card__score-status">19. Apr, 15:00</span>
+                    </div>
+                    <div class="fixture-card__team fixture-card__team--away">
+                        <span class="fixture-card__team-name">FK Borac</span>
+                        <span class="fixture-card__team-short">BOR</span>
+                    </div>
+                </div>
+
+                <!-- Fixture 5 -->
+                <div class="fixture-card fixture-card--upcoming">
+                    <div class="fixture-card__team fixture-card__team--home">
+                        <span class="fixture-card__team-name">HŠK Posušje</span>
+                        <span class="fixture-card__team-short">POS</span>
+                    </div>
+                    <div class="fixture-card__score">
+                        <span class="fixture-card__score-value">vs</span>
+                        <span class="fixture-card__score-status">19. Apr, 17:00</span>
+                    </div>
+                    <div class="fixture-card__team fixture-card__team--away">
+                        <span class="fixture-card__team-name">NK Široki Brijeg</span>
+                        <span class="fixture-card__team-short">ŠIR</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Top performers -->
+        <div class="gameweek-section">
+            <h2 class="gameweek-section__title">Najbolji igrači kola</h2>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Igrač</th>
+                            <th>Klub</th>
+                            <th>Pozicija</th>
+                            <th>Golovi</th>
+                            <th>Asistencije</th>
+                            <th>Minute</th>
+                            <th style="width: 80px;">Poeni</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Nemanja Bilbija</strong></td>
+                            <td>HŠK Zrinjski</td>
+                            <td><span class="badge badge--danger">NAP</span></td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>90</td>
+                            <td><span class="text-gold">7</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Adem Ljajić</strong></td>
+                            <td>FK Sarajevo</td>
+                            <td><span class="badge badge--info">VEZ</span></td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>90</td>
+                            <td><span class="text-gold">12</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Vedad Muftić</strong></td>
+                            <td>FK Željezničar</td>
+                            <td><span class="badge badge--success">GK</span></td>
+                            <td>0</td>
+                            <td>1</td>
+                            <td>90</td>
+                            <td><span class="text-gold">10</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Besim Šerbečić</strong></td>
+                            <td>FK Velež</td>
+                            <td><span class="badge badge--gold">ODB</span></td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>90</td>
+                            <td><span class="text-gold">9</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="gameweek-nav">
+            <a href="#" class="btn btn--outline">
+                <i class="fas fa-chevron-left"></i> Kolo 14
+            </a>
+            <a href="#" class="btn btn--outline">
+                Kolo 16 <i class="fas fa-chevron-right"></i>
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block title %}Upravljanje Kolima — BH Fantasy Liga{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-wrapper">
+
+        <!-- Page header -->
+        <div class="page-header">
+            <h1 class="page-header__title">Upravljanje Kolima</h1>
+            <p class="page-header__sub">Kreirajte i upravljajte kolima WWin Lige BiH</p>
+        </div>
+
+        <div class="admin-split">
+
+            <!-- Gameweeks list -->
+            <div class="admin-split__list">
+                <div class="admin-split__list-header">
+                    <h2 class="admin-section__title">Sva kola</h2>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Kolo</th>
+                                <th>Deadline</th>
+                                <th>Status</th>
+                                <th>Akcije</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Kolo 15</strong></td>
+                                <td class="text-muted">18. Apr 2026, 17:00</td>
+                                <td><span class="badge badge--success">Aktivno</span></td>
+                                <td>
+                                    <div class="admin-table-actions">
+                                        <button class="btn btn--sm btn--outline">Uredi</button>
+                                        <button class="btn btn--sm btn--danger">Zatvori</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Kolo 14</strong></td>
+                                <td class="text-muted">11. Apr 2026, 17:00</td>
+                                <td><span class="badge badge--grey">Završeno</span></td>
+                                <td>
+                                    <div class="admin-table-actions">
+                                        <button class="btn btn--sm btn--outline">Uredi</button>
+                                        <button class="btn btn--sm btn--ghost" disabled>Zatvori</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Kolo 13</strong></td>
+                                <td class="text-muted">4. Apr 2026, 17:00</td>
+                                <td><span class="badge badge--grey">Završeno</span></td>
+                                <td>
+                                    <div class="admin-table-actions">
+                                        <button class="btn btn--sm btn--outline">Uredi</button>
+                                        <button class="btn btn--sm btn--ghost" disabled>Zatvori</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Kolo 12</strong></td>
+                                <td class="text-muted">28. Mar 2026, 17:00</td>
+                                <td><span class="badge badge--grey">Završeno</span></td>
+                                <td>
+                                    <div class="admin-table-actions">
+                                        <button class="btn btn--sm btn--outline">Uredi</button>
+                                        <button class="btn btn--sm btn--ghost" disabled>Zatvori</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Kolo 16</strong></td>
+                                <td class="text-muted">25. Apr 2026, 17:00</td>
+                                <td><span class="badge badge--info">Predstojeće</span></td>
+                                <td>
+                                    <div class="admin-table-actions">
+                                        <button class="btn btn--sm btn--outline">Uredi</button>
+                                        <button class="btn btn--sm btn--ghost" disabled>Zatvori</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Create/edit form -->
+            <div class="admin-split__form">
+                <h2 class="admin-section__title">Novo kolo</h2>
+                <div class="card">
+                    <div class="form-group">
+                        <label class="form-group__label">Broj kola</label>
+                        <input type="number" class="form-control" placeholder="npr. 16" min="1" max="38">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-group__label">Naziv kola</label>
+                        <input type="text" class="form-control" placeholder="npr. Kolo 16">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-group__label">Datum i vrijeme deadlinea</label>
+                        <input type="datetime-local" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-group__label">Status</label>
+                        <select class="form-control">
+                            <option value="upcoming">Predstojeće</option>
+                            <option value="active">Aktivno</option>
+                            <option value="finished">Završeno</option>
+                        </select>
+                    </div>
+                    <div class="admin-form-actions">
+                        <button class="btn btn--primary">
+                            <i class="fas fa-plus"></i> Kreiraj kolo
+                        </button>
+                        <button class="btn btn--ghost">
+                            Poništi
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Active gameweek info -->
+                <div class="admin-gameweek-info">
+                    <h3 class="admin-gameweek-info__title">Aktivno kolo</h3>
+                    <div class="admin-gameweek-info__card">
+                        <div class="admin-gameweek-info__row">
+                            <span class="text-muted">Kolo</span>
+                            <strong>Kolo 15</strong>
+                        </div>
+                        <div class="admin-gameweek-info__row">
+                            <span class="text-muted">Deadline</span>
+                            <strong>18. Apr 2026, 17:00</strong>
+                        </div>
+                        <div class="admin-gameweek-info__row">
+                            <span class="text-muted">Transferi</span>
+                            <span class="badge badge--success">Otvoreni</span>
+                        </div>
+                        <div class="admin-gameweek-info__row">
+                            <span class="text-muted">Ukupno fantasy timova</span>
+                            <strong>156</strong>
+                        </div>
+                        <div class="admin-gameweek-info__actions">
+                            <button class="btn btn--danger btn--sm">
+                                <i class="fas fa-lock"></i> Zatvori transfere
+                            </button>
+                            <button class="btn btn--outline btn--sm">
+                                <i class="fas fa-calculator"></i> Izračunaj poene
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

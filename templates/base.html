@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}BH Fantasy Liga{% endblock %}</title>
+
+    <!-- Google fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <!-- Base stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar">
+        <div class="navbar__inner">
+
+            <!-- Logo -->
+            <a href="{{ url_for('news.feed') }}" class="navbar__logo">
+                <span class="navbar__logo-bh">BH</span>
+                <span class="navbar__logo-text">Fantasy Liga</span>
+            </a>
+
+            <!-- Hamburger -->
+            <button class="navbar__hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <!-- Nav links -->
+            <div class="navbar__menu" id="navMenu">
+
+                {% if current_user.is_authenticated %}
+
+                    {% if current_user.role == 'admin' %}
+                        <!-- ADMIN NAV -->
+                        <a href="{{ url_for('admin.dashboard') }}" class="navbar__link {% if request.endpoint and request.endpoint.startswith('admin') %}active{% endif %}">
+                            <i class="fas fa-gauge-high"></i> Admin
+                        </a>
+                    {% else %}
+                        <!-- USER NAV -->
+                        <a href="{{ url_for('news.feed') }}" class="navbar__link {% if request.endpoint == 'news.feed' %}active{% endif %}">
+                            <i class="fas fa-newspaper"></i> Vijesti
+                        </a>
+                        <a href="{{ url_for('fantasy.my_team') }}" class="navbar__link {% if request.endpoint == 'fantasy.my_team' %}active{% endif %}">
+                            <i class="fas fa-shield-halved"></i> Moj Tim
+                        </a>
+                        <a href="{{ url_for('fantasy.transfers') }}" class="navbar__link {% if request.endpoint == 'fantasy.transfers' %}active{% endif %}">
+                            <i class="fas fa-right-left"></i> Transferi
+                        </a>
+                        <a href="{{ url_for('fantasy.players') }}" class="navbar__link {% if request.endpoint == 'fantasy.players' %}active{% endif %}">
+                            <i class="fas fa-users"></i> Igrači
+                        </a>
+                        <a href="{{ url_for('fantasy.gameweek') }}" class="navbar__link {% if request.endpoint == 'fantasy.gameweek' %}active{% endif %}">
+                            <i class="fas fa-calendar-week"></i> Kolo
+                        </a>
+                        <a href="{{ url_for('fantasy.leaderboard') }}" class="navbar__link {% if request.endpoint == 'fantasy.leaderboard' %}active{% endif %}">
+                            <i class="fas fa-trophy"></i> Rang Lista
+                        </a>
+                    {% endif %}
+
+                    <!-- User dropdown -->
+                    <div class="navbar__user" id="userDropdownToggle">
+                        <div class="navbar__avatar">
+                            {{ current_user.username[0]|upper }}
+                        </div>
+                        <span class="navbar__username">{{ current_user.username }}</span>
+                        <i class="fas fa-chevron-down navbar__chevron"></i>
+
+                        <div class="navbar__dropdown" id="userDropdown">
+                            <a href="{{ url_for('user.profile') }}" class="navbar__dropdown-item">
+                                <i class="fas fa-user"></i> Profil
+                            </a>
+                            {% if current_user.role == 'admin' %}
+                            <a href="{{ url_for('news.feed') }}" class="navbar__dropdown-item">
+                                <i class="fas fa-globe"></i> Stranica
+                            </a>
+                            {% endif %}
+                            <div class="navbar__dropdown-divider"></div>
+                            <a href="{{ url_for('auth.logout') }}" class="navbar__dropdown-item navbar__dropdown-item--danger">
+                                <i class="fas fa-right-from-bracket"></i> Odjava
+                            </a>
+                        </div>
+                    </div>
+
+                {% else %}
+                    <!-- GUEST NAV -->
+                    <a href="{{ url_for('news.feed') }}" class="navbar__link">
+                        <i class="fas fa-newspaper"></i> Vijesti
+                    </a>
+                    <a href="{{ url_for('auth.login') }}" class="navbar__link">Prijava</a>
+                    <a href="{{ url_for('auth.register') }}" class="navbar__btn">Registracija</a>
+                {% endif %}
+
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== FLASH MESSAGES ===== -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-container">
+                {% for category, message in messages %}
+                    <div class="flash flash--{{ category }}">
+                        <span>{{ message }}</span>
+                        <button class="flash__close" onclick="this.parentElement.remove()">
+                            <i class="fas fa-xmark"></i>
+                        </button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- ===== PAGE CONTENT ===== -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="footer__inner">
+            <div class="footer__brand">
+                <span class="navbar__logo-bh">BH</span>
+                <span class="navbar__logo-text">Fantasy Liga</span>
+                <p class="footer__tagline">Bosanska Premijer Liga — Fantasy Iskustvo</p>
+            </div>
+
+            <div class="footer__links">
+                <a href="{{ url_for('news.feed') }}">Vijesti</a>
+                <a href="{{ url_for('fantasy.leaderboard') }}">Rang Lista</a>
+                <a href="{{ url_for('fantasy.players') }}">Igrači</a>
+            </div>
+
+            <div class="footer__copy">
+                <p>&copy; {% set year = 2026 %}{{ year }} BH Fantasy Liga</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===== SCRIPTS ===== -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+
+</body>
+</html>

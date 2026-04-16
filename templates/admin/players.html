@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+
+{% block title %}Upravljanje Igračima — BH Fantasy Liga{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-wrapper">
+
+        <!-- Page header -->
+        <div class="page-header">
+            <h1 class="page-header__title">Upravljanje Igračima</h1>
+            <p class="page-header__sub">Dodajte i upravljajte igračima WWin Lige BiH</p>
+        </div>
+
+        <div class="admin-split admin-split--wide">
+
+            <!-- Players table -->
+            <div class="admin-split__list">
+                <div class="admin-split__list-header">
+                    <h2 class="admin-section__title">Svi igrači</h2>
+                </div>
+
+                <!-- Filters -->
+                <div class="players-filters" style="margin-bottom: 16px;">
+                    <input type="text" class="form-control players-filters__search" placeholder="Pretraži igrača...">
+                    <select class="form-control players-filters__select">
+                        <option value="">Svi klubovi</option>
+                        <option>FK Sarajevo</option>
+                        <option>FK Željezničar</option>
+                        <option>FK Velež Mostar</option>
+                        <option>FK Zrinjski Mostar</option>
+                        <option>FK Borac Banja Luka</option>
+                        <option>FK Široki Brijeg</option>
+                        <option>FK Posušje</option>
+                        <option>FK Sloga Doboj</option>
+                        <option>FK Radnik Bijeljina</option>
+                        <option>FK Rudar Prijedor</option>
+                    </select>
+                    <select class="form-control players-filters__select">
+                        <option value="">Sve pozicije</option>
+                        <option>GK</option>
+                        <option>DEF</option>
+                        <option>MID</option>
+                        <option>FWD</option>
+                    </select>
+                </div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Igrač</th>
+                                <th>Klub</th>
+                                <th>Poz.</th>
+                                <th>Cijena</th>
+                                <th>Status</th>
+                                <th>Akcije</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Nemanja Bilbija</strong></td>
+                                <td class="text-muted">FK Borac Banja Luka</td>
+                                <td><span class="badge badge--danger">NAP</span></td>
+                                <td>8.5m</td>
+                                <td><span class="badge badge--success">Dostupan</span></td>
+                                <td>
+                                    <div class="admin-table-actions">
+                                        <button class="btn btn--sm btn--outline">Uredi</button>
+                                        <button class="btn btn--sm btn--danger">Obriši</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Emir Hadžić</strong></td>
+                                <td class="text-muted">FK Željezničar</td>
+                                <td><span class="badge badge--info">VEZ</span></td>
+                                <td>7.0m</td>
+                                <td><span class="badge badge--success">Dostupan</span></td>
+                                <td>
+                                    <div class="admin-table-actions">
+                                        <button class="btn btn--sm btn--outline">Uredi</button>
+                                        <button class="btn btn--sm btn--danger">Obriši</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Asmir Kovačević</strong></td>
+                                <td class="text-muted">FK Sarajevo</td>
+                                <td><span class="badge badge--success">ODB</span></td>
+                                <td>6.0m</td>
+                                <td><span class="badge badge--danger">Nedostupan</span></td>
+                                <td>
+                                    <div class="admin-table-actions">
+                                        <button class="btn btn--sm btn--outline">Uredi</button>
+                                        <button class="btn btn--sm btn--danger">Obriši</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Kenan Pirić</strong></td>
+                                <td class="text-muted">FK Željezničar</td>
+                                <td><span class="badge badge--gold">GK</span></td>
+                                <td>5.5m</td>
+                                <td><span class="badge badge--success">Dostupan</span></td>
+                                <td>
+                                    <div class="admin-table-actions">
+                                        <button class="btn btn--sm btn--outline">Uredi</button>
+                                        <button class="btn btn--sm btn--danger">Obriši</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Damir Kojašević</strong></td>
+                                <td class="text-muted">FK Velež Mostar</td>
+                                <td><span class="badge badge--danger">NAP</span></td>
+                                <td>7.5m</td>
+                                <td><span class="badge badge--success">Dostupan</span></td>
+                                <td>
+                                    <div class="admin-table-actions">
+                                        <button class="btn btn--sm btn--outline">Uredi</button>
+                                        <button class="btn btn--sm btn--danger">Obriši</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Haris Handžić</strong></td>
+                                <td class="text-muted">FK Sarajevo</td>
+                                <td><span class="badge badge--info">VEZ</span></td>
+                                <td>6.5m</td>
+                                <td><span class="badge badge--success">Dostupan</span></td>
+                                <td>
+                                    <div class="admin-table-actions">
+                                        <button class="btn btn--sm btn--outline">Uredi</button>
+                                        <button class="btn btn--sm btn--danger">Obriši</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Ivan Lučić</strong></td>
+                                <td class="text-muted">FK Široki Brijeg</td>
+                                <td><span class="badge badge--gold">GK</span></td>
+                                <td>5.0m</td>
+                                <td><span class="badge badge--success">Dostupan</span></td>
+                                <td>
+                                    <div class="admin-table-actions">
+                                        <button class="btn btn--sm btn--outline">Uredi</button>
+                                        <button class="btn btn--sm btn--danger">Obriši</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="players-footer">
+                    <p class="text-muted">Prikazano 7 od 284 igrača</p>
+                </div>
+            </div>
+
+            <!-- Add/edit form -->
+            <div class="admin-split__form">
+                <h2 class="admin-section__title">Dodaj igrača</h2>
+                <div class="card">
+                    <div class="form-group">
+                        <label class="form-group__label">Ime</label>
+                        <input type="text" class="form-control" placeholder="npr. Nemanja">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-group__label">Prezime</label>
+                        <input type="text" class="form-control" placeholder="npr. Bilbija">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-group__label">Klub</label>
+                        <select class="form-control">
+                            <option value="">Odaberite klub</option>
+                            <option>FK Sarajevo</option>
+                            <option>FK Željezničar</option>
+                            <option>FK Velež Mostar</option>
+                            <option>FK Zrinjski Mostar</option>
+                            <option>FK Borac Banja Luka</option>
+                            <option>FK Široki Brijeg</option>
+                            <option>FK Posušje</option>
+                            <option>FK Sloga Doboj</option>
+                            <option>FK Radnik Bijeljina</option>
+                            <option>FK Rudar Prijedor</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-group__label">Pozicija</label>
+                        <select class="form-control">
+                            <option value="">Odaberite poziciju</option>
+                            <option value="GK">GK — Golman</option>
+                            <option value="DEF">DEF — Odbrana</option>
+                            <option value="MID">MID — Vezni</option>
+                            <option value="FWD">FWD — Napadač</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-group__label">Cijena (m)</label>
+                        <input type="number" class="form-control" placeholder="npr. 7.5" step="0.5" min="4.0" max="15.0">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-group__label">Status</label>
+                        <select class="form-control">
+                            <option value="true">Dostupan</option>
+                            <option value="false">Nedostupan</option>
+                        </select>
+                    </div>
+                    <div class="admin-form-actions">
+                        <button class="btn btn--primary">
+                            <i class="fas fa-plus"></i> Dodaj igrača
+                        </button>
+                        <button class="btn btn--ghost">
+                            Poništi
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}

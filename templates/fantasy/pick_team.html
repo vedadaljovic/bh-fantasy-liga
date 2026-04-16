@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block title %}Odaberi Tim — BH Fantasy Liga{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pick_team.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-wrapper">
+        
+        <!-- Page header -->
+        <div class="page-header">
+            <h1 class="page-header__title">Odaberi Svoj Tim</h1>
+            <p class="page-header__sub">Odaberite 15 igrača unutar budžeta od 100.0m — 2 GK, 5 DEF, 5 MID, 3 FWD</p>
+        </div>
+
+        <div class="pick-status">
+            <div class="pick-status__item">
+                <span class="pick-status__label">Budžet</span>
+                <span class="pick-status__value text-gold" id="remaining-budget">100.0m</span>
+            </div>
+            <div class="pick-status__item">
+                <span class="pick-status__label">Potrošeno</span>
+                <span class="pick-status__value" id="spent-budget">0.0m</span>
+            </div>
+            <div class="pick-status__item pick-status__item--progress">
+                <span class="pick-status__label">Odabrani igrači: <strong id="progress-count">0 / 15</strong></span>
+                <div class="pick-progress-bar">
+                    <div class="pick-progress-bar__fill" id="progress-bar-fill"></div>
+                </div>
+            </div>
+            <div class="pick-status__item">
+                <button class="btn btn--ghost" id="save-btn" disabled>
+                    <i class="fas fa-check"></i> Spremi tim
+                </button>
+            </div>
+        </div>
+
+        <div class="transfer-layout">
+
+            <div class="transfer-pitch-wrap">
+                <div class="transfer-pitch">
+
+                    <!-- GK row -->
+                    <div class="pitch-row">
+                        <div class="pitch-slot" id="slot-gk1" onclick="selectSlot('gk1')">
+                            <div class="pitch-slot__avatar"><i class="fas fa-plus"></i></div>
+                            <p class="pitch-slot__pos">GK</p>
+                        </div>
+                        <div class="pitch-slot" id="slot-gk2" onclick="selectSlot('gk2')">
+                            <div class="pitch-slot__avatar"><i class="fas fa-plus"></i></div>
+                            <p class="pitch-slot__pos">GK</p>
+                        </div>
+                    </div>
+
+                    <!-- DEF row -->
+                    <div class="pitch-row">
+                        <div class="pitch-slot" id="slot-def1" onclick="selectSlot('def1')">
+                            <div class="pitch-slot__avatar"><i class="fas fa-plus"></i></div>
+                            <p class="pitch-slot__pos">DEF</p>
+                        </div>
+                        <div class="pitch-slot" id="slot-def2" onclick="selectSlot('def2')">
+                            <div class="pitch-slot__avatar"><i class="fas fa-plus"></i></div>
+                            <p class="pitch-slot__pos">DEF</p>
+                        </div>
+                        <div class="pitch-slot" id="slot-def3" onclick="selectSlot('def3')">
+                            <div class="pitch-slot__avatar"><i class="fas fa-plus"></i></div>
+                            <p class="pitch-slot__pos">DEF</p>
+                        </div>
+                        <div class="pitch-slot" id="slot-def4" onclick="selectSlot('def4')">
+                            <div class="pitch-slot__avatar"><i class="fas fa-plus"></i></div>
+                            <p class="pitch-slot__pos">DEF</p>
+                        </div>
+                        <div class="pitch-slot" id="slot-def5" onclick="selectSlot('def5')">
+                            <div class="pitch-slot__avatar"><i class="fas fa-plus"></i></div>
+                            <p class="pitch-slot__pos">DEF</p>
+                        </div>
+                    </div>
+
+                    <!-- MID row -->
+                    <div class="pitch-row">
+                        <div class="pitch-slot" id="slot-mid1" onclick="selectSlot('mid1')">
+                            <div class="pitch-slot__avatar"><i class="fas fa-plus"></i></div>
+                            <p class="pitch-slot__pos">MID</p>
+                        </div>
+                        <div class="pitch-slot" id="slot-mid2" onclick="selectSlot('mid2')">
+                            <div class="pitch-slot__avatar"><i class="fas fa-plus"></i></div>
+                            <p class="pitch-slot__pos">MID</p>
+                        </div>
+                        <div class="pitch-slot" id="slot-mid3" onclick="selectSlot('mid3')">
+                            <div class="pitch-slot__avatar"><i class="fas fa-plus"></i></div>
+                            <p class="pitch-slot__pos">MID</p>
+                        </div>
+                        <div class="pitch-slot" id="slot-mid4" onclick="selectSlot('mid4')">
+                            <div class="pitch-slot__avatar"><i class="fas fa-plus"></i></div>
+                            <p class="pitch-slot__pos">MID</p>
+                        </div>
+                        <div class="pitch-slot" id="slot-mid5" onclick="selectSlot('mid5')">
+                            <div class="pitch-slot__avatar"><i class="fas fa-plus"></i></div>
+                            <p class="pitch-slot__pos">MID</p>
+                        </div>
+                    </div>
+
+                    <!-- FWD row -->
+                    <div class="pitch-row">
+                        <div class="pitch-slot" id="slot-fwd1" onclick="selectSlot('fwd1')">
+                            <div class="pitch-slot__avatar"><i class="fas fa-plus"></i></div>
+                            <p class="pitch-slot__pos">FWD</p>
+                        </div>
+                        <div class="pitch-slot" id="slot-fwd2" onclick="selectSlot('fwd2')">
+                            <div class="pitch-slot__avatar"><i class="fas fa-plus"></i></div>
+                            <p class="pitch-slot__pos">FWD</p>
+                        </div>
+                        <div class="pitch-slot" id="slot-fwd3" onclick="selectSlot('fwd3')">
+                            <div class="pitch-slot__avatar"><i class="fas fa-plus"></i></div>
+                            <p class="pitch-slot__pos">FWD</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Available players -->
+            <div class="replacements-panel" id="available-panel">
+                <div class="replacements-panel__header">
+                    <h3 class="replacements-panel__title" id="available-title">Odaberite slot</h3>
+                    <button class="replacements-panel__close" id="close-available">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="replacements-list" id="available-list">
+                    <p class="text-muted" style="padding: 16px;">Kliknite na slot na terenu da odaberete igrača.</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/pick_team.js') }}"></script>
+{% endblock %}

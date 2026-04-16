@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}Registracija — BH Fantasy Liga{% endblock %}
+
+{% block content %}
+
+<div class="auth__container">
+    <div class="auth__card">
+
+        <!-- Page header -->
+        <div class="auth__header">
+            <h1 class="auth__title">Registracija</h1>
+            <p class="auth__subtitle">Kreirajte svoj Fantasy nalog</p>
+        </div>
+
+        <!-- Alerts -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="auth__alert {% if category == 'success' %}auth__alert--success{% elif category == 'danger' %}auth__alert--error{% else %}auth__alert--error{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Form -->
+        <form method="POST" action="{{ url_for('auth.register') }}" class="auth__form">
+
+            <!-- Username -->
+            <div class="form-group">
+                <label for="username" class="auth__label">Korisničko ime</label>
+                <input 
+                    type="text" 
+                    id="username" 
+                    name="username" 
+                    class="auth__input"
+                    placeholder="Vaše korisničko ime"
+                    required
+                    autofocus
+                >
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+                <label for="email" class="auth__label">Email</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    class="auth__input"
+                    placeholder="vas@email.com"
+                    required
+                >
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                <label for="password" class="auth__label">Lozinka</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    minlength="6"
+                    class="auth__input"
+                    placeholder="Najmanje 6 karaktera"
+                    required
+                >
+            </div>
+
+            <!-- Password Confirm -->
+            <div class="form-group">
+                <label for="password_confirm" class="auth__label">Potvrdite lozinku</label>
+                <input 
+                    type="password" 
+                    id="password_confirm" 
+                    name="password_confirm"
+                    minlength="6" 
+                    class="auth__input"
+                    placeholder="Ponovite vašu lozinku"
+                    required
+                >
+            </div>
+
+            <button type="submit" class="auth__btn">Registruj se</button>
+
+        </form>
+
+        <!-- Footer -->
+        <div class="auth__footer">
+            <p class="auth__footer-text">Već imate nalog? <a href="{{ url_for('auth.login') }}" class="auth__link">Prijavite se ovde</a></p>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

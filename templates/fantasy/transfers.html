@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block title %}Transferi — BH Fantasy Liga{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-wrapper">
+
+        <!-- Page header -->
+        <div class="page-header">
+            <h1 class="page-header__title">Transferi</h1>
+            <p class="page-header__sub">Odaberite igrača kojeg želite zamijeniti, zatim odaberite zamjenu</p>
+        </div>
+
+        <!-- Transfer info bar -->
+        <div class="transfer-bar">
+            <div class="transfer-bar__item">
+                <span class="transfer-bar__label">Slobodni transferi</span>
+                <span class="transfer-bar__value text-gold">2</span>
+            </div>
+            <div class="transfer-bar__item">
+                <span class="transfer-bar__label">Dodatni transferi</span>
+                <span class="transfer-bar__value">-2 pts svaki</span>
+            </div>
+            <div class="transfer-bar__item">
+                <span class="transfer-bar__label">Budžet</span>
+                <span class="transfer-bar__value text-gold">3.5m</span>
+            </div>
+            <div class="transfer-bar__item">
+                <span class="transfer-bar__label">Deadline</span>
+                <span class="transfer-bar__value">18. Apr, 17:00</span>
+            </div>
+        </div>
+
+        <div class="transfer-layout">
+
+            <!-- Pitch -->
+            <div class="transfer-pitch-wrap">
+                <div class="transfer-pitch">
+
+                    <!-- GK row -->
+                    <div class="pitch-row">
+                        <div class="pitch-player" id="player-1" onclick="selectPlayerOut(1, 'Kenan Pirić', 'gk')">
+                            <div class="pitch-player__avatar">KP</div>
+                            <p class="pitch-player__name">Pirić</p>
+                            <p class="pitch-player__club">ŽEL</p>
+                            <p class="pitch-player__price">5.5m</p>
+                        </div>
+                    </div>
+
+                    <!-- DEF row -->
+                    <div class="pitch-row">
+                        <div class="pitch-player" id="player-2" onclick="selectPlayerOut(2, 'Adnan Kovačević', 'def')">
+                            <div class="pitch-player__avatar">AK</div>
+                            <p class="pitch-player__name">Kovačević</p>
+                            <p class="pitch-player__club">SAR</p>
+                            <p class="pitch-player__price">6.0m</p>
+                        </div>
+                        <div class="pitch-player" id="player-3" onclick="selectPlayerOut(3, 'Tarik Muharemović', 'def')">
+                            <div class="pitch-player__avatar">TM</div>
+                            <p class="pitch-player__name">Muharemović</p>
+                            <p class="pitch-player__club">ZRI</p>
+                            <p class="pitch-player__price">5.5m</p>
+                        </div>
+                        <div class="pitch-player" id="player-4" onclick="selectPlayerOut(4, 'Haris Bećirović', 'def')">
+                            <div class="pitch-player__avatar">HB</div>
+                            <p class="pitch-player__name">Bećirović</p>
+                            <p class="pitch-player__club">VEL</p>
+                            <p class="pitch-player__price">5.0m</p>
+                        </div>
+                        <div class="pitch-player" id="player-5" onclick="selectPlayerOut(5, 'Damir Šunjić', 'def')">
+                            <div class="pitch-player__avatar">DŠ</div>
+                            <p class="pitch-player__name">Šunjić</p>
+                            <p class="pitch-player__club">BOA</p>
+                            <p class="pitch-player__price">5.0m</p>
+                        </div>
+                    </div>
+
+                    <!-- MID row -->
+                    <div class="pitch-row">
+                        <div class="pitch-player" id="player-6" onclick="selectPlayerOut(6, 'Emir Hadžić', 'mid')">
+                            <div class="pitch-player__avatar">EH</div>
+                            <p class="pitch-player__name">Hadžić</p>
+                            <p class="pitch-player__club">ŽEL</p>
+                            <p class="pitch-player__price">7.0m</p>
+                        </div>
+                        <div class="pitch-player" id="player-7" onclick="selectPlayerOut(7, 'Haris Handžić', 'mid')">
+                            <div class="pitch-player__avatar">HH</div>
+                            <p class="pitch-player__name">Handžić</p>
+                            <p class="pitch-player__club">SAR</p>
+                            <p class="pitch-player__price">6.5m</p>
+                        </div>
+                        <div class="pitch-player" id="player-8" onclick="selectPlayerOut(8, 'Bojan Pavlović', 'mid')">
+                            <div class="pitch-player__avatar">BP</div>
+                            <p class="pitch-player__name">Pavlović</p>
+                            <p class="pitch-player__club">RAD</p>
+                            <p class="pitch-player__price">5.5m</p>
+                        </div>
+                        <div class="pitch-player" id="player-9" onclick="selectPlayerOut(9, 'Semir Štilić', 'mid')">
+                            <div class="pitch-player__avatar">SŠ</div>
+                            <p class="pitch-player__name">Štilić</p>
+                            <p class="pitch-player__club">ŽEL</p>
+                            <p class="pitch-player__price">6.0m</p>
+                        </div>
+                        <div class="pitch-player" id="player-10" onclick="selectPlayerOut(10, 'Amar Rahimić', 'mid')">
+                            <div class="pitch-player__avatar">AR</div>
+                            <p class="pitch-player__name">Rahimić</p>
+                            <p class="pitch-player__club">VEL</p>
+                            <p class="pitch-player__price">5.5m</p>
+                        </div>
+                    </div>
+
+                    <!-- FWD row -->
+                    <div class="pitch-row">
+                        <div class="pitch-player" id="player-11" onclick="selectPlayerOut(11, 'Nemanja Bilbija', 'fwd')">
+                            <div class="pitch-player__avatar">NB</div>
+                            <p class="pitch-player__name">Bilbija</p>
+                            <p class="pitch-player__club">BOA</p>
+                            <p class="pitch-player__price">8.5m</p>
+                        </div>
+                        <div class="pitch-player" id="player-12" onclick="selectPlayerOut(12, 'Damir Kojašević', 'fwd')">
+                            <div class="pitch-player__avatar">DK</div>
+                            <p class="pitch-player__name">Kojašević</p>
+                            <p class="pitch-player__club">VEL</p>
+                            <p class="pitch-player__price">7.5m</p>
+                        </div>
+                        <div class="pitch-player" id="player-13" onclick="selectPlayerOut(13, 'Amer Dupovac', 'fwd')">
+                            <div class="pitch-player__avatar">AD</div>
+                            <p class="pitch-player__name">Dupovac</p>
+                            <p class="pitch-player__club">RUD</p>
+                            <p class="pitch-player__price">5.0m</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Replacements panel -->
+            <div class="replacements-panel" id="replacements-panel">
+                <div class="replacements-panel__header">
+                    <h3 class="replacements-panel__title" id="replacements-title">Odaberite igrača</h3>
+                    <button class="replacements-panel__close" id="close-replacements">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="replacements-list" id="replacements-list">
+                    <p class="text-muted" style="padding: 16px;">Kliknite na igrača u timu da vidite zamjene.</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/transfers.js') }}"></script>
+{% endblock %}

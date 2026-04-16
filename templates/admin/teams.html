@@ -1,0 +1,238 @@
+{% extends "base.html" %}
+
+{% block title %}Upravljanje Klubovima — BH Fantasy Liga{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-wrapper">
+
+        <!-- Page header -->
+        <div class="page-header">
+            <h1 class="page-header__title">Upravljanje Klubovima</h1>
+            <p class="page-header__sub">Dodajte i upravljajte klubovima WWin Lige BiH</p>
+        </div>
+
+        <div class="admin-split">
+
+            <!-- Teams table -->
+            <div class="admin-split__list">
+                <div class="admin-split__list-header">
+                    <h2 class="admin-section__title">Svi klubovi</h2>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Klub</th>
+                                <th>Skraćenica</th>
+                                <th>Broj igrača</th>
+                                <th>Akcije</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="admin-team">
+                                        <div class="admin-team__badge">SAR</div>
+                                        <strong>FK Sarajevo</strong>
+                                    </div>
+                                </td>
+                                <td class="text-muted">SAR</td>
+                                <td>28</td>
+                                <td>
+                                    <div class="admin-table-actions">
+                                        <button class="btn btn--sm btn--outline">Uredi</button>
+                                        <button class="btn btn--sm btn--danger">Obriši</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="admin-team">
+                                        <div class="admin-team__badge">ŽEL</div>
+                                        <strong>FK Željezničar</strong>
+                                    </div>
+                                </td>
+                                <td class="text-muted">ŽEL</td>
+                                <td>27</td>
+                                <td>
+                                    <div class="admin-table-actions">
+                                        <button class="btn btn--sm btn--outline">Uredi</button>
+                                        <button class="btn btn--sm btn--danger">Obriši</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="admin-team">
+                                        <div class="admin-team__badge">VEL</div>
+                                        <strong>FK Velež Mostar</strong>
+                                    </div>
+                                </td>
+                                <td class="text-muted">VEL</td>
+                                <td>29</td>
+                                <td>
+                                    <div class="admin-table-actions">
+                                        <button class="btn btn--sm btn--outline">Uredi</button>
+                                        <button class="btn btn--sm btn--danger">Obriši</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="admin-team">
+                                        <div class="admin-team__badge">ZRI</div>
+                                        <strong>FK Zrinjski Mostar</strong>
+                                    </div>
+                                </td>
+                                <td class="text-muted">ZRI</td>
+                                <td>30</td>
+                                <td>
+                                    <div class="admin-table-actions">
+                                        <button class="btn btn--sm btn--outline">Uredi</button>
+                                        <button class="btn btn--sm btn--danger">Obriši</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="admin-team">
+                                        <div class="admin-team__badge">BOA</div>
+                                        <strong>FK Borac Banja Luka</strong>
+                                    </div>
+                                </td>
+                                <td class="text-muted">BOA</td>
+                                <td>28</td>
+                                <td>
+                                    <div class="admin-table-actions">
+                                        <button class="btn btn--sm btn--outline">Uredi</button>
+                                        <button class="btn btn--sm btn--danger">Obriši</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="admin-team">
+                                        <div class="admin-team__badge">ŠIR</div>
+                                        <strong>FK Široki Brijeg</strong>
+                                    </div>
+                                </td>
+                                <td class="text-muted">ŠIR</td>
+                                <td>27</td>
+                                <td>
+                                    <div class="admin-table-actions">
+                                        <button class="btn btn--sm btn--outline">Uredi</button>
+                                        <button class="btn btn--sm btn--danger">Obriši</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="admin-team">
+                                        <div class="admin-team__badge">POS</div>
+                                        <strong>FK Posušje</strong>
+                                    </div>
+                                </td>
+                                <td class="text-muted">POS</td>
+                                <td>26</td>
+                                <td>
+                                    <div class="admin-table-actions">
+                                        <button class="btn btn--sm btn--outline">Uredi</button>
+                                        <button class="btn btn--sm btn--danger">Obriši</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="admin-team">
+                                        <div class="admin-team__badge">SLO</div>
+                                        <strong>FK Sloga Doboj</strong>
+                                    </div>
+                                </td>
+                                <td class="text-muted">SLO</td>
+                                <td>25</td>
+                                <td>
+                                    <div class="admin-table-actions">
+                                        <button class="btn btn--sm btn--outline">Uredi</button>
+                                        <button class="btn btn--sm btn--danger">Obriši</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="admin-team">
+                                        <div class="admin-team__badge">RAD</div>
+                                        <strong>FK Radnik Bijeljina</strong>
+                                    </div>
+                                </td>
+                                <td class="text-muted">RAD</td>
+                                <td>27</td>
+                                <td>
+                                    <div class="admin-table-actions">
+                                        <button class="btn btn--sm btn--outline">Uredi</button>
+                                        <button class="btn btn--sm btn--danger">Obriši</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="admin-team">
+                                        <div class="admin-team__badge">RUD</div>
+                                        <strong>FK Rudar Prijedor</strong>
+                                    </div>
+                                </td>
+                                <td class="text-muted">RUD</td>
+                                <td>27</td>
+                                <td>
+                                    <div class="admin-table-actions">
+                                        <button class="btn btn--sm btn--outline">Uredi</button>
+                                        <button class="btn btn--sm btn--danger">Obriši</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="players-footer">
+                    <p class="text-muted">10 klubova ukupno</p>
+                </div>
+            </div>
+
+            <!-- Add/edit form -->
+            <div class="admin-split__form">
+                <h2 class="admin-section__title">Dodaj klub</h2>
+                <div class="card">
+                    <div class="form-group">
+                        <label class="form-group__label">Naziv kluba</label>
+                        <input type="text" class="form-control" placeholder="npr. FK Sarajevo">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-group__label">Skraćenica</label>
+                        <input type="text" class="form-control" placeholder="npr. SAR" maxlength="5">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-group__label">Logo (URL)</label>
+                        <input type="text" class="form-control" placeholder="https://...">
+                    </div>
+                    <div class="admin-form-actions">
+                        <button class="btn btn--primary">
+                            <i class="fas fa-plus"></i> Dodaj klub
+                        </button>
+                        <button class="btn btn--ghost">
+                            Poništi
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Note -->
+                <div class="admin-teams-note">
+                    <i class="fas fa-circle-info"></i>
+                    <p>WWin Liga BiH ima 10 klubova u sezoni 2025/26. Brisanje kluba će ukloniti i sve igrače tog kluba iz baze.</p>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

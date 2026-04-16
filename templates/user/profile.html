@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+
+{% block title %}Profil — BH Fantasy Liga{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-wrapper">
+
+        <!-- Page header -->
+        <div class="page-header">
+            <h1 class="page-header__title">Moj Profil</h1>
+            <p class="page-header__sub">Pregled vašeg profila i fantasy statistika</p>
+        </div>
+
+        <div class="profile-layout">
+
+            <div class="profile-left">
+
+                <!-- Profile card -->
+                <div class="profile-card">
+                    <div class="profile-card__avatar">V</div>
+                    <h2 class="profile-card__username">vedad10</h2>
+                    <p class="profile-card__email">vedad@gmail.com</p>
+                    <p class="profile-card__joined text-muted">Član od: 13. Apr 2026</p>
+                    <span class="badge badge--gold">Fantasy igrač</span>
+                </div>
+
+                <!-- Fantasy stats card -->
+                <div class="card mt-16">
+                    <h3 class="profile-section__title">Fantasy statistike</h3>
+                    <div class="profile-stats">
+                        <div class="profile-stat">
+                            <span class="profile-stat__value text-gold">312</span>
+                            <span class="profile-stat__label">Ukupno poena</span>
+                        </div>
+                        <div class="profile-stat">
+                            <span class="profile-stat__value">24</span>
+                            <span class="profile-stat__label">Rang lista</span>
+                        </div>
+                        <div class="profile-stat">
+                            <span class="profile-stat__value">52</span>
+                            <span class="profile-stat__label">Poeni kola</span>
+                        </div>
+                        <div class="profile-stat">
+                            <span class="profile-stat__value">8</span>
+                            <span class="profile-stat__label">Transferi</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fantasy team info -->
+                <div class="card mt-16">
+                    <h3 class="profile-section__title">Moj tim</h3>
+                    <div class="profile-team">
+                        <div class="profile-team__row">
+                            <span class="text-muted">Naziv tima</span>
+                            <strong>Vedadovi Lavovi</strong>
+                        </div>
+                        <div class="profile-team__row">
+                            <span class="text-muted">Formacija</span>
+                            <strong>4-3-3</strong>
+                        </div>
+                        <div class="profile-team__row">
+                            <span class="text-muted">Kapiten</span>
+                            <strong>Nemanja Bilbija</strong>
+                        </div>
+                        <div class="profile-team__row">
+                            <span class="text-muted">Potkapiten</span>
+                            <strong>Emir Hadžić</strong>
+                        </div>
+                        <div class="profile-team__row">
+                            <span class="text-muted">Preostali budžet</span>
+                            <span class="text-gold">3.5m</span>
+                        </div>
+                    </div>
+                    <a href="{{ url_for('fantasy.my_team') }}" class="btn btn--outline mt-16" style="width: 100%; justify-content: center;">
+                        <i class="fas fa-shield-halved"></i> Pogledaj tim
+                    </a>
+                </div>
+
+            </div>
+
+            <div class="profile-right">
+
+                <!-- Gameweek history -->
+                <div class="card">
+                    <h3 class="profile-section__title">Historija kola</h3>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Kolo</th>
+                                    <th>Poeni</th>
+                                    <th>Rang</th>
+                                    <th>Transferi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Kolo 15</strong> <span class="badge badge--success">Aktivno</span></td>
+                                    <td><span class="text-gold">52</span></td>
+                                    <td>24</td>
+                                    <td>1</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Kolo 14</strong></td>
+                                    <td><span class="text-gold">48</span></td>
+                                    <td>31</td>
+                                    <td>0</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Kolo 13</strong></td>
+                                    <td><span class="text-gold">61</span></td>
+                                    <td>18</td>
+                                    <td>2</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Kolo 12</strong></td>
+                                    <td><span class="text-gold">35</span></td>
+                                    <td>52</td>
+                                    <td>1</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Kolo 11</strong></td>
+                                    <td><span class="text-gold">44</span></td>
+                                    <td>38</td>
+                                    <td>0</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Kolo 10</strong></td>
+                                    <td><span class="text-gold">57</span></td>
+                                    <td>22</td>
+                                    <td>1</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Kolo 9</strong></td>
+                                    <td><span class="text-gold">39</span></td>
+                                    <td>44</td>
+                                    <td>0</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Kolo 8</strong></td>
+                                    <td><span class="text-gold">43</span></td>
+                                    <td>35</td>
+                                    <td>1</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Settings -->
+                <div class="card mt-16">
+                    <h3 class="profile-section__title">Postavke</h3>
+
+                    <!-- Change Team Name -->
+                    <div class="profile-settings-group">
+                        <label class="form-group__label">Naziv fantasy tima</label>
+                        <div class="profile-settings-row">
+                            <input type="text" class="form-control" value="Vedadovi Lavovi">
+                            <button class="btn btn--outline">Spremi</button>
+                        </div>
+                    </div>
+
+                    <!-- Change password -->
+                    <div class="profile-settings-group">
+                        <label class="form-group__label">Promjena lozinke</label>
+                        <div class="form-group">
+                            <input type="password" class="form-control" placeholder="Trenutna lozinka">
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" placeholder="Nova lozinka">
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" placeholder="Potvrdite novu lozinku">
+                        </div>
+                        <button class="btn btn--primary">
+                            <i class="fas fa-lock"></i> Promijeni lozinku
+                        </button>
+                    </div>
+
+                    <!-- Danger zone -->
+                    <div class="profile-danger-zone">
+                        <h4 class="profile-danger-zone__title">Opasna zona</h4>
+                        <p class="profile-danger-zone__desc">Brisanje naloga je trajno i ne može se poništiti. Svi vaši fantasy podaci će biti izgubljeni.</p>
+                        <button class="btn btn--danger btn--sm">
+                            <i class="fas fa-trash"></i> Obriši nalog
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}

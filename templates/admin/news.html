@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block title %}Upravljanje Vijestima — BH Fantasy Liga{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-wrapper">
+
+        <!-- Page header -->
+        <div class="page-header">
+            <h1 class="page-header__title">Upravljanje Vijestima</h1>
+            <p class="page-header__sub">Kreirajte i upravljajte vijestima WWin Lige BiH</p>
+        </div>
+
+        <div class="admin-split">
+
+            <!-- Articles list -->
+            <div class="admin-split__list">
+                <div class="admin-split__list-header">
+                    <h2 class="admin-section__title">Sve vijesti</h2>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Naslov</th>
+                                <th>Kategorija</th>
+                                <th>Datum</th>
+                                <th>Akcije</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Kolo 15 je počelo sa velikim iznenađenjima</strong></td>
+                                <td><span class="badge badge--info">Vijesti</span></td>
+                                <td class="text-muted">7. Apr 2026</td>
+                                <td>
+                                    <div class="admin-table-actions">
+                                        <button class="btn btn--sm btn--outline">Uredi</button>
+                                        <button class="btn btn--sm btn--danger">Obriši</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Intervju sa najboljim strijelcem sezone</strong></td>
+                                <td><span class="badge badge--gold">Intervju</span></td>
+                                <td class="text-muted">6. Apr 2026</td>
+                                <td>
+                                    <div class="admin-table-actions">
+                                        <button class="btn btn--sm btn--outline">Uredi</button>
+                                        <button class="btn btn--sm btn--danger">Obriši</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Vruća transfer tržišta: Analiza mogućih transfera</strong></td>
+                                <td><span class="badge badge--grey">Transfer</span></td>
+                                <td class="text-muted">5. Apr 2026</td>
+                                <td>
+                                    <div class="admin-table-actions">
+                                        <button class="btn btn--sm btn--outline">Uredi</button>
+                                        <button class="btn btn--sm btn--danger">Obriši</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Taktička analiza: Kako se mijenja Liga ove sezone</strong></td>
+                                <td><span class="badge badge--success">Analiza</span></td>
+                                <td class="text-muted">4. Apr 2026</td>
+                                <td>
+                                    <div class="admin-table-actions">
+                                        <button class="btn btn--sm btn--outline">Uredi</button>
+                                        <button class="btn btn--sm btn--danger">Obriši</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Kolo 14: Pregled svih rezultata</strong></td>
+                                <td><span class="badge badge--info">Vijesti</span></td>
+                                <td class="text-muted">3. Apr 2026</td>
+                                <td>
+                                    <div class="admin-table-actions">
+                                        <button class="btn btn--sm btn--outline">Uredi</button>
+                                        <button class="btn btn--sm btn--danger">Obriši</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Uživo: Sve što se desilo tokom sezone</strong></td>
+                                <td><span class="badge badge--danger">Uživo</span></td>
+                                <td class="text-muted">2. Apr 2026</td>
+                                <td>
+                                    <div class="admin-table-actions">
+                                        <button class="btn btn--sm btn--outline">Uredi</button>
+                                        <button class="btn btn--sm btn--danger">Obriši</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Create form -->
+            <div class="admin-split__form">
+                <h2 class="admin-section__title">Nova vijest</h2>
+                <div class="card">
+                    <div class="form-group">
+                        <label class="form-group__label">Naslov</label>
+                        <input type="text" class="form-control" placeholder="Naslov vijesti...">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-group__label">Kategorija</label>
+                        <select class="form-control">
+                            <option value="vijesti">Vijesti</option>
+                            <option value="intervju">Intervju</option>
+                            <option value="transfer">Transfer</option>
+                            <option value="analiza">Analiza</option>
+                            <option value="uzivo">Uživo</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-group__label">Slika (URL)</label>
+                        <input type="text" class="form-control" placeholder="https://...">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-group__label">Sadržaj</label>
+                        <textarea class="form-control admin-news-textarea" placeholder="Unesite sadržaj vijesti..."></textarea>
+                    </div>
+                    <div class="admin-form-actions">
+                        <button class="btn btn--primary">
+                            <i class="fas fa-plus"></i> Objavi vijest
+                        </button>
+                        <button class="btn btn--ghost">
+                            Poništi
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}

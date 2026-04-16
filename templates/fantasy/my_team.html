@@ -1,0 +1,275 @@
+{% extends "base.html" %}
+
+{% block title %}Moj Tim — BH Fantasy Liga{% endblock %}
+
+{% block content %}
+
+<div class="main-content">
+    <div class="page-wrapper">
+
+        <!-- Page header -->
+        <div class="page-header">
+            <h1 class="page-header__title">Moj Fantasy Tim</h1>
+            <p class="page-header__sub">Kolo 15 je aktivno. Deadline za transfere: 7. Apr, 19:00</p>
+        </div>
+
+        <!-- Team stats bar -->
+        <div class="team-stats-bar">
+            <div class="team-stat">
+                <p class="team-stat__label">Timska Vrijednost</p>
+                <p class="team-stat__value">104.5m KM</p>
+            </div>
+            <div class="team-stat">
+                <p class="team-stat__label">Novac u Banci</p>
+                <p class="team-stat__value text-gold">2.1m KM</p>
+            </div>
+            <div class="team-stat">
+                <p class="team-stat__label">Kolo (Poeni)</p>
+                <p class="team-stat__value">+68</p>
+            </div>
+            <div class="team-stat">
+                <p class="team-stat__label">Ukupni Poeni</p>
+                <p class="team-stat__value text-gold">3,850</p>
+            </div>
+            <div class="team-stat">
+                <p class="team-stat__label">Rang</p>
+                <p class="team-stat__value">4. mjesto</p>
+            </div>
+        </div>
+
+        <!-- Team actions -->
+        <div class="team-actions">
+            <a href="{{ url_for('fantasy.transfers') }}" class="btn btn--primary">
+                <i class="fas fa-right-left"></i> Transferi
+            </a>
+            <a href="#" class="btn btn--outline">
+                <i class="fas fa-pen"></i> Promijeni Tim
+            </a>
+            <a href="#" class="btn btn--outline">
+                <i class="fas fa-redo"></i> Vrati Proslost
+            </a>
+        </div>
+
+        <!-- Team formation -->
+        <div class="team-formation">
+            <div class="team-formation__header">
+                <h2 class="team-formation__title">Formacija: <span id="current-formation">4-3-3</span></h2>
+                <button class="btn btn--outline btn--sm" id="formation-toggle">
+                    <i class="fas fa-edit"></i> Promijeni
+                </button>
+            </div>
+
+            <!-- Formation selector -->
+            <div class="formation-selector" id="formation-selector">
+                <p class="formation-selector__label">Izaberite novu formaciju:</p>
+                <div class="formation-options">
+                    <button class="formation-option active" data-formation="4-3-3">
+                        <span class="formation-option__name">4-3-3</span>
+                        <span class="formation-option__desc">4 Bran. 3 Vez. 3 Nap.</span>
+                    </button>
+                    <button class="formation-option" data-formation="4-4-2">
+                        <span class="formation-option__name">4-4-2</span>
+                        <span class="formation-option__desc">4 Bran. 4 Vez. 2 Nap.</span>
+                    </button>
+                    <button class="formation-option" data-formation="3-5-2">
+                        <span class="formation-option__name">3-5-2</span>
+                        <span class="formation-option__desc">3 Bran. 5 Vez. 2 Nap.</span>
+                    </button>
+                    <button class="formation-option" data-formation="5-3-2">
+                        <span class="formation-option__name">5-3-2</span>
+                        <span class="formation-option__desc">5 Bran. 3 Vez. 2 Nap.</span>
+                    </button>
+                    <button class="formation-option" data-formation="3-4-3">
+                        <span class="formation-option__name">3-4-3</span>
+                        <span class="formation-option__desc">3 Bran. 4 Vez. 3 Nap.</span>
+                    </button>
+                </div>
+                <button class="btn btn--primary btn--sm formation-selector__close" id="formation-close">
+                    Zatvori
+                </button>
+            </div>
+            
+            <!-- Formation display -->
+            <div class="formation-display">
+                
+                <!-- Goalkeeper Row -->
+                <div class="formation-row formation-row--gk">
+                    <div class="player-slot player-slot--gk">
+                        <div class="player-slot__content">
+                            <div class="player-slot__avatar">GK</div>
+                            <p class="player-slot__name">Nikola Vasilj</p>
+                            <p class="player-slot__position">Golman</p>
+                            <p class="player-slot__points">
+                                <span class="player-slot__captain-badge">
+                                    <i class="fas fa-shield-halved"></i>
+                                </span>
+                                +8 poena
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Defenders row -->
+                <div class="formation-row formation-row--defenders">
+                    <div class="player-slot">
+                        <div class="player-slot__content">
+                            <div class="player-slot__avatar">DF</div>
+                            <p class="player-slot__name">Sead Kolašinac</p>
+                            <p class="player-slot__position">Branič</p>
+                            <p class="player-slot__points">+7 poena</p>
+                        </div>
+                    </div>
+                    <div class="player-slot">
+                        <div class="player-slot__content">
+                            <div class="player-slot__avatar">DF</div>
+                            <p class="player-slot__name">Tarik Muharemović</p>
+                            <p class="player-slot__position">Branič</p>
+                            <p class="player-slot__points">+5 poena</p>
+                        </div>
+                    </div>
+                    <div class="player-slot">
+                        <div class="player-slot__content">
+                            <div class="player-slot__avatar">DF</div>
+                            <p class="player-slot__name">Stefan Ristovski</p>
+                            <p class="player-slot__position">Branič</p>
+                            <p class="player-slot__points">
+                                <span class="player-slot__vice-captain-badge">
+                                    <i class="fas fa-star"></i>
+                                </span>
+                                +12 poena
+                            </p>
+                        </div>
+                    </div>
+                    <div class="player-slot">
+                        <div class="player-slot__content">
+                            <div class="player-slot__avatar">DF</div>
+                            <p class="player-slot__name">Amar Dedić</p>
+                            <p class="player-slot__position">Branič</p>
+                            <p class="player-slot__points">+6 poena</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Midfielders row -->
+                <div class="formation-row formation-row--midfielders">
+                    <div class="player-slot">
+                        <div class="player-slot__content">
+                            <div class="player-slot__avatar">MF</div>
+                            <p class="player-slot__name">Amar Rahmanović</p>
+                            <p class="player-slot__position">Veznjak</p>
+                            <p class="player-slot__points">+15 poena</p>
+                        </div>
+                    </div>
+                    <div class="player-slot">
+                        <div class="player-slot__content">
+                            <div class="player-slot__avatar">MF</div>
+                            <p class="player-slot__name">Zajko Zeba</p>
+                            <p class="player-slot__position">Veznjak</p>
+                            <p class="player-slot__points">+9 poena</p>
+                        </div>
+                    </div>
+                    <div class="player-slot">
+                        <div class="player-slot__content">
+                            <div class="player-slot__avatar">MF</div>
+                            <p class="player-slot__name">Gojko Cimirot</p>
+                            <p class="player-slot__position">Veznjak</p>
+                            <p class="player-slot__points">+11 poena</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Forwards row -->
+                <div class="formation-row formation-row--forwards">
+                    <div class="player-slot">
+                        <div class="player-slot__content">
+                            <div class="player-slot__avatar">FW</div>
+                            <p class="player-slot__name">Benjamin Tatar</p>
+                            <p class="player-slot__position">Napadač</p>
+                            <p class="player-slot__points">
+                                <span class="player-slot__captain-badge">
+                                    <i class="fas fa-crown"></i>
+                                </span>
+                                +35 poena
+                            </p>
+                        </div>
+                    </div>
+                    <div class="player-slot">
+                        <div class="player-slot__content">
+                            <div class="player-slot__avatar">FW</div>
+                            <p class="player-slot__name">Alen Škoro</p>
+                            <p class="player-slot__position">Napadač</p>
+                            <p class="player-slot__points">+14 poena</p>
+                        </div>
+                    </div>
+                    <div class="player-slot">
+                        <div class="player-slot__content">
+                            <div class="player-slot__avatar">FW</div>
+                            <p class="player-slot__name">Kerim Alajbegović</p>
+                            <p class="player-slot__position">Napadač</p>
+                            <p class="player-slot__points">+8 poena</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Bench section -->
+        <div class="team-bench">
+            <h3 class="team-bench__title">Klupa</h3>
+            <div class="bench-players">
+                <div class="bench-player">
+                    <div class="bench-player__avatar">GK</div>
+                    <div class="bench-player__info">
+                        <p class="bench-player__name">Kenan Hasagić</p>
+                        <p class="bench-player__position">Golman</p>
+                    </div>
+                    <p class="bench-player__points">+0 poena</p>
+                </div>
+                <div class="bench-player">
+                    <div class="bench-player__avatar">DF</div>
+                    <div class="bench-player__info">
+                        <p class="bench-player__name">Emir Spahić</p>
+                        <p class="bench-player__position">Branič</p>
+                    </div>
+                    <p class="bench-player__points">+0 poena</p>
+                </div>
+                <div class="bench-player">
+                    <div class="bench-player__avatar">MF</div>
+                    <div class="bench-player__info">
+                        <p class="bench-player__name">Miralem Pjanić</p>
+                        <p class="bench-player__position">Veznjak</p>
+                    </div>
+                    <p class="bench-player__points">+0 poena</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Captain and vice captain info -->
+        <div class="captain-info">
+            <div class="captain-info__card">
+                <div class="captain-info__badge">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <h4 class="captain-info__title">Kapiten</h4>
+                <p class="captain-info__name">Benjamin Tatar</p>
+                <p class="captain-info__points">Poeni: +35 (×2)</p>
+            </div>
+            <div class="captain-info__card">
+                <div class="captain-info__badge captain-info__badge--vice">
+                    <i class="fas fa-star"></i>
+                </div>
+                <h4 class="captain-info__title">Potkapiten</h4>
+                <p class="captain-info__name">Stefan Ristovski</p>
+                <p class="captain-info__points">Poeni: +12 (×1.5)</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/formation-selector.js') }}"></script>
+{% endblock %}

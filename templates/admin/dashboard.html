@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard — BH Fantasy Liga{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-wrapper">
+
+        <!-- Page header -->
+        <div class="page-header">
+            <h1 class="page-header__title">Admin Dashboard</h1>
+            <p class="page-header__sub">Pregled sistema — BH Fantasy Liga</p>
+        </div>
+
+        <!-- Stats cards -->
+        <div class="admin-stats">
+            <div class="admin-stat-card">
+                <div class="admin-stat-card__icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="admin-stat-card__info">
+                    <span class="admin-stat-card__value">156</span>
+                    <span class="admin-stat-card__label">Registrovanih korisnika</span>
+                </div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="admin-stat-card__icon admin-stat-card__icon--gold">
+                    <i class="fas fa-person-running"></i>
+                </div>
+                <div class="admin-stat-card__info">
+                    <span class="admin-stat-card__value">284</span>
+                    <span class="admin-stat-card__label">Igrača u bazi</span>
+                </div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="admin-stat-card__icon admin-stat-card__icon--success">
+                    <i class="fas fa-calendar-week"></i>
+                </div>
+                <div class="admin-stat-card__info">
+                    <span class="admin-stat-card__value">15 / 38</span>
+                    <span class="admin-stat-card__label">Trenutno kolo</span>
+                </div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="admin-stat-card__icon admin-stat-card__icon--info">
+                    <i class="fas fa-newspaper"></i>
+                </div>
+                <div class="admin-stat-card__info">
+                    <span class="admin-stat-card__value">24</span>
+                    <span class="admin-stat-card__label">Objavljenih vijesti</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- System status -->
+        <div class="admin-section">
+            <h2 class="admin-section__title">Status sistema</h2>
+            <div class="system-status">
+                <div class="system-status__item">
+                    <span class="system-status__label">Aktivno kolo</span>
+                    <span class="badge badge--success">Kolo 15 — Aktivno</span>
+                </div>
+                <div class="system-status__item">
+                    <span class="system-status__label">Transfer deadline</span>
+                    <span class="system-status__value">18. Apr 2026, 17:00</span>
+                </div>
+                <div class="system-status__item">
+                    <span class="system-status__label">Transferi</span>
+                    <span class="badge badge--success">Otvoreni</span>
+                </div>
+                <div class="system-status__item">
+                    <span class="system-status__label">Baza podataka</span>
+                    <span class="badge badge--success">Povezana</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick actions -->
+        <div class="admin-section">
+            <h2 class="admin-section__title">Brze akcije</h2>
+            <div class="admin-actions">
+                <a href="{{ url_for('admin.news') }}" class="admin-action-card">
+                    <i class="fas fa-plus admin-action-card__icon"></i>
+                    <span class="admin-action-card__label">Dodaj vijest</span>
+                </a>
+                <a href="{{ url_for('admin.players') }}" class="admin-action-card">
+                    <i class="fas fa-person-running admin-action-card__icon"></i>
+                    <span class="admin-action-card__label">Upravljaj igračima</span>
+                </a>
+                <a href="{{ url_for('admin.gameweeks') }}" class="admin-action-card">
+                    <i class="fas fa-calendar-week admin-action-card__icon"></i>
+                    <span class="admin-action-card__label">Upravljaj kolima</span>
+                </a>
+                <a href="{{ url_for('admin.teams') }}" class="admin-action-card">
+                    <i class="fas fa-shield-halved admin-action-card__icon"></i>
+                    <span class="admin-action-card__label">Upravljaj klubovima</span>
+                </a>
+                <a href="{{ url_for('admin.users') }}" class="admin-action-card">
+                    <i class="fas fa-users admin-action-card__icon"></i>
+                    <span class="admin-action-card__label">Upravljaj korisnicima</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="admin-overview">
+
+            <!-- Recent Registrations -->
+            <div class="admin-section">
+                <h2 class="admin-section__title">Nedavne registracije</h2>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Korisnik</th>
+                                <th>Email</th>
+                                <th>Datum</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="admin-user">
+                                        <div class="admin-user__avatar">EH</div>
+                                        <span>emirh</span>
+                                    </div>
+                                </td>
+                                <td class="text-muted">emir@gmail.com</td>
+                                <td class="text-muted">14. Apr 2026</td>
+                                <td><span class="badge badge--success">Aktivan</span></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="admin-user">
+                                        <div class="admin-user__avatar">AK</div>
+                                        <span>adnank</span>
+                                    </div>
+                                </td>
+                                <td class="text-muted">adnan@hotmail.com</td>
+                                <td class="text-muted">13. Apr 2026</td>
+                                <td><span class="badge badge--success">Aktivan</span></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="admin-user">
+                                        <div class="admin-user__avatar">HB</div>
+                                        <span>harisb</span>
+                                    </div>
+                                </td>
+                                <td class="text-muted">haris@gmail.com</td>
+                                <td class="text-muted">12. Apr 2026</td>
+                                <td><span class="badge badge--success">Aktivan</span></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="admin-user">
+                                        <div class="admin-user__avatar">TM</div>
+                                        <span>tarikm</span>
+                                    </div>
+                                </td>
+                                <td class="text-muted">tarik@gmail.com</td>
+                                <td class="text-muted">11. Apr 2026</td>
+                                <td><span class="badge badge--danger">Deaktiviran</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Recent transfers -->
+            <div class="admin-section">
+                <h2 class="admin-section__title">Nedavni transferi igrača</h2>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Igrač</th>
+                                <th>Iz kluba</th>
+                                <th></th>
+                                <th>U klub</th>
+                                <th>Datum</th>
+                                <th>Akcija</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Nemanja Bilbija</strong></td>
+                                <td class="text-muted">FK Borac Banja Luka</td>
+                                <td><i class="fas fa-arrow-right text-gold"></i></td>
+                                <td>FK Sarajevo</td>
+                                <td class="text-muted">14. Apr 2026</td>
+                                <td>
+                                    <a href="{{ url_for('admin.players') }}" class="btn btn--sm btn--outline">
+                                        Ažuriraj
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Emir Hadžić</strong></td>
+                                <td class="text-muted">FK Željezničar</td>
+                                <td><i class="fas fa-arrow-right text-gold"></i></td>
+                                <td>FK Velež Mostar</td>
+                                <td class="text-muted">10. Apr 2026</td>
+                                <td>
+                                    <a href="{{ url_for('admin.players') }}" class="btn btn--sm btn--outline">
+                                        Ažuriraj
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Damir Kojašević</strong></td>
+                                <td class="text-muted">FK Velež Mostar</td>
+                                <td><i class="fas fa-arrow-right text-gold"></i></td>
+                                <td>FK Zrinjski Mostar</td>
+                                <td class="text-muted">5. Apr 2026</td>
+                                <td>
+                                    <a href="{{ url_for('admin.players') }}" class="btn btn--sm btn--outline">
+                                        Ažuriraj
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Haris Handžić</strong></td>
+                                <td class="text-muted">FK Sarajevo</td>
+                                <td><i class="fas fa-arrow-right text-gold"></i></td>
+                                <td>FK Borac Banja Luka</td>
+                                <td class="text-muted">1. Apr 2026</td>
+                                <td>
+                                    <a href="{{ url_for('admin.players') }}" class="btn btn--sm btn--outline">
+                                        Ažuriraj
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}
