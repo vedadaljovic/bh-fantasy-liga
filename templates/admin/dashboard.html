@@ -6,20 +6,24 @@
 <div class="main-content">
     <div class="page-wrapper">
 
-        <!-- Page header -->
         <div class="page-header">
             <h1 class="page-header__title">Admin Dashboard</h1>
             <p class="page-header__sub">Pregled sistema — BH Fantasy Liga</p>
         </div>
 
-        <!-- Stats cards -->
+        <div id="admin-msg" class="alert" style="display:none;margin-bottom:16px;"></div>
+
+        <!-- Hidden GW id for JS -->
+        <input type="hidden" id="active-gw-id" value="{{ active_gw.id if active_gw else '' }}">
+
+        <!-- Stats -->
         <div class="admin-stats">
             <div class="admin-stat-card">
                 <div class="admin-stat-card__icon">
                     <i class="fas fa-users"></i>
                 </div>
                 <div class="admin-stat-card__info">
-                    <span class="admin-stat-card__value">156</span>
+                    <span class="admin-stat-card__value">{{ user_count }}</span>
                     <span class="admin-stat-card__label">Registrovanih korisnika</span>
                 </div>
             </div>
@@ -28,7 +32,7 @@
                     <i class="fas fa-person-running"></i>
                 </div>
                 <div class="admin-stat-card__info">
-                    <span class="admin-stat-card__value">284</span>
+                    <span class="admin-stat-card__value">{{ player_count }}</span>
                     <span class="admin-stat-card__label">Igrača u bazi</span>
                 </div>
             </div>
@@ -37,8 +41,10 @@
                     <i class="fas fa-calendar-week"></i>
                 </div>
                 <div class="admin-stat-card__info">
-                    <span class="admin-stat-card__value">15 / 38</span>
-                    <span class="admin-stat-card__label">Trenutno kolo</span>
+                    <span class="admin-stat-card__value">
+                        {% if active_gw %}Kolo {{ active_gw.number }}{% else %}—{% endif %}
+                    </span>
+                    <span class="admin-stat-card__label">Aktivno kolo</span>
                 </div>
             </div>
             <div class="admin-stat-card">
@@ -46,7 +52,7 @@
                     <i class="fas fa-newspaper"></i>
                 </div>
                 <div class="admin-stat-card__info">
-                    <span class="admin-stat-card__value">24</span>
+                    <span class="admin-stat-card__value">{{ news_count }}</span>
                     <span class="admin-stat-card__label">Objavljenih vijesti</span>
                 </div>
             </div>
@@ -58,20 +64,80 @@
             <div class="system-status">
                 <div class="system-status__item">
                     <span class="system-status__label">Aktivno kolo</span>
-                    <span class="badge badge--success">Kolo 15 — Aktivno</span>
+                    {% if active_gw %}
+                    <span class="badge badge--success">Kolo {{ active_gw.number }} — Aktivno</span>
+                    {% else %}
+                    <span class="badge badge--danger">Nema aktivnog kola</span>
+                    {% endif %}
                 </div>
                 <div class="system-status__item">
                     <span class="system-status__label">Transfer deadline</span>
-                    <span class="system-status__value">18. Apr 2026, 17:00</span>
+                    <span class="system-status__value">
+                        {% if active_gw %}
+                        {{ active_gw.deadline.strftime('%d. %b %Y, %H:%M') }}
+                        {% else %}—{% endif %}
+                    </span>
                 </div>
                 <div class="system-status__item">
                     <span class="system-status__label">Transferi</span>
+                    {% if transfers_open %}
                     <span class="badge badge--success">Otvoreni</span>
+                    {% else %}
+                    <span class="badge badge--danger">Zatvoreni</span>
+                    {% endif %}
                 </div>
                 <div class="system-status__item">
-                    <span class="system-status__label">Baza podataka</span>
-                    <span class="badge badge--success">Povezana</span>
+                    <span class="system-status__label">Fantasy timova</span>
+                    <span class="system-status__value">{{ team_count }}</span>
                 </div>
+            </div>
+        </div>
+
+        <!-- Matchday controls -->
+        <div class="admin-section">
+            <h2 class="admin-section__title">Matchday kontrola</h2>
+            <div class="bhfl-chips-grid" style="grid-template-columns: repeat(4, 1fr);">
+
+                <div class="bhfl-chip-card">
+                    <span class="bhfl-chip-emoji">📅</span>
+                    <p class="bhfl-chip-name">Raspored</p>
+                    <button class="btn btn--outline btn--sm" id="btn-scrape-fixtures"
+                            onclick="runScrapeFixtures()">
+                        <i class="fas fa-calendar-days"></i> Pokreni
+                    </button>
+                </div>
+
+                <div class="bhfl-chip-card">
+                    <span class="bhfl-chip-emoji">📡</span>
+                    <p class="bhfl-chip-name">Live scraper</p>
+                    <button class="btn btn--outline btn--sm" id="btn-scrape-live"
+                            onclick="runScrapeLive()">
+                        <i class="fas fa-satellite-dish"></i> Pokreni
+                    </button>
+                </div>
+
+                <div class="bhfl-chip-card">
+                    <span class="bhfl-chip-emoji">❌</span>
+                    <p class="bhfl-chip-name">
+                        Zatvori kolo
+                        {% if active_gw %}<br><small style="font-size:11px;color:var(--grey-400);font-weight:400;">Kolo {{ active_gw.number }}</small>{% endif %}
+                    </p>
+                    <button class="btn btn--danger btn--sm" id="btn-calc-points"
+                            {% if not active_gw %}disabled{% endif %}
+                            onclick="runCalculatePoints()">
+                        <i class="fas fa-calculator"></i> Pokreni
+                    </button>
+                </div>
+
+                <div class="bhfl-chip-card">
+                    <span class="bhfl-chip-emoji">📰</span>
+                    <p class="bhfl-chip-name">Vijesti</p>
+                    <button class="btn btn--outline btn--sm" id="btn-scrape-news"
+                            onclick="runScrapeNews()">
+                        <i class="fas fa-newspaper"></i> Pokreni
+                    </button>
+                </div>
+
             </div>
         </div>
 
@@ -102,142 +168,54 @@
             </div>
         </div>
 
-        <div class="admin-overview">
-
-            <!-- Recent Registrations -->
-            <div class="admin-section">
-                <h2 class="admin-section__title">Nedavne registracije</h2>
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Korisnik</th>
-                                <th>Email</th>
-                                <th>Datum</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <div class="admin-user">
-                                        <div class="admin-user__avatar">EH</div>
-                                        <span>emirh</span>
-                                    </div>
-                                </td>
-                                <td class="text-muted">emir@gmail.com</td>
-                                <td class="text-muted">14. Apr 2026</td>
-                                <td><span class="badge badge--success">Aktivan</span></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="admin-user">
-                                        <div class="admin-user__avatar">AK</div>
-                                        <span>adnank</span>
-                                    </div>
-                                </td>
-                                <td class="text-muted">adnan@hotmail.com</td>
-                                <td class="text-muted">13. Apr 2026</td>
-                                <td><span class="badge badge--success">Aktivan</span></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="admin-user">
-                                        <div class="admin-user__avatar">HB</div>
-                                        <span>harisb</span>
-                                    </div>
-                                </td>
-                                <td class="text-muted">haris@gmail.com</td>
-                                <td class="text-muted">12. Apr 2026</td>
-                                <td><span class="badge badge--success">Aktivan</span></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="admin-user">
-                                        <div class="admin-user__avatar">TM</div>
-                                        <span>tarikm</span>
-                                    </div>
-                                </td>
-                                <td class="text-muted">tarik@gmail.com</td>
-                                <td class="text-muted">11. Apr 2026</td>
-                                <td><span class="badge badge--danger">Deaktiviran</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+        <!-- Recent registrations -->
+        <div class="admin-section">
+            <h2 class="admin-section__title">Nedavne registracije</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Korisnik</th>
+                            <th>Email</th>
+                            <th>Datum</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for u in recent_users %}
+                        <tr>
+                            <td>
+                                <div class="admin-user">
+                                    <div class="admin-user__avatar">{{ u.username[0]|upper }}</div>
+                                    <span>{{ u.username }}</span>
+                                </div>
+                            </td>
+                            <td class="text-muted">{{ u.email }}</td>
+                            <td class="text-muted">
+                                {{ u.created_at.strftime('%d. %b %Y') if u.created_at else '—' }}
+                            </td>
+                            <td>
+                                {% if u.is_active %}
+                                <span class="badge badge--success">Aktivan</span>
+                                {% else %}
+                                <span class="badge badge--danger">Deaktiviran</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="4" class="text-muted" style="text-align:center;padding:16px;">
+                            Nema registrovanih korisnika.
+                        </td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
-
-            <!-- Recent transfers -->
-            <div class="admin-section">
-                <h2 class="admin-section__title">Nedavni transferi igrača</h2>
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Igrač</th>
-                                <th>Iz kluba</th>
-                                <th></th>
-                                <th>U klub</th>
-                                <th>Datum</th>
-                                <th>Akcija</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>Nemanja Bilbija</strong></td>
-                                <td class="text-muted">FK Borac Banja Luka</td>
-                                <td><i class="fas fa-arrow-right text-gold"></i></td>
-                                <td>FK Sarajevo</td>
-                                <td class="text-muted">14. Apr 2026</td>
-                                <td>
-                                    <a href="{{ url_for('admin.players') }}" class="btn btn--sm btn--outline">
-                                        Ažuriraj
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>Emir Hadžić</strong></td>
-                                <td class="text-muted">FK Željezničar</td>
-                                <td><i class="fas fa-arrow-right text-gold"></i></td>
-                                <td>FK Velež Mostar</td>
-                                <td class="text-muted">10. Apr 2026</td>
-                                <td>
-                                    <a href="{{ url_for('admin.players') }}" class="btn btn--sm btn--outline">
-                                        Ažuriraj
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>Damir Kojašević</strong></td>
-                                <td class="text-muted">FK Velež Mostar</td>
-                                <td><i class="fas fa-arrow-right text-gold"></i></td>
-                                <td>FK Zrinjski Mostar</td>
-                                <td class="text-muted">5. Apr 2026</td>
-                                <td>
-                                    <a href="{{ url_for('admin.players') }}" class="btn btn--sm btn--outline">
-                                        Ažuriraj
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>Haris Handžić</strong></td>
-                                <td class="text-muted">FK Sarajevo</td>
-                                <td><i class="fas fa-arrow-right text-gold"></i></td>
-                                <td>FK Borac Banja Luka</td>
-                                <td class="text-muted">1. Apr 2026</td>
-                                <td>
-                                    <a href="{{ url_for('admin.players') }}" class="btn btn--sm btn--outline">
-                                        Ažuriraj
-                                    </a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
         </div>
 
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/admin_dashboard.js') }}"></script>
 {% endblock %}

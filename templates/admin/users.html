@@ -2,129 +2,33 @@
 
 {% block title %}Upravljanje Korisnicima — BH Fantasy Liga{% endblock %}
 
-{% block extra_js %}
-<script>
-const users = {
-    emirh: {
-        username: "emirh",
-        email: "emir@gmail.com",
-        registered: "14. Apr 2026",
-        status: "active",
-        fantasyTeam: "Emir's Elites",
-        totalPoints: 312,
-        gameweek: 15,
-        transfers: 8
-    },
-    adnank: {
-        username: "adnank",
-        email: "adnan@hotmail.com",
-        registered: "13. Apr 2026",
-        status: "active",
-        fantasyTeam: "Adnanovi Lavovi",
-        totalPoints: 287,
-        gameweek: 15,
-        transfers: 12
-    },
-    harisb: {
-        username: "harisb",
-        email: "haris@gmail.com",
-        registered: "12. Apr 2026",
-        status: "active",
-        fantasyTeam: "Harisovi Orlovi",
-        totalPoints: 265,
-        gameweek: 15,
-        transfers: 6
-    },
-    tarikm: {
-        username: "tarikm",
-        email: "tarik@gmail.com",
-        registered: "11. Apr 2026",
-        status: "inactive",
-        fantasyTeam: "Tarik FC",
-        totalPoints: 198,
-        gameweek: 15,
-        transfers: 4
-    },
-    kenanp: {
-        username: "kenanp",
-        email: "kenan@gmail.com",
-        registered: "10. Apr 2026",
-        status: "active",
-        fantasyTeam: "Kenanovi Zmajevi",
-        totalPoints: 301,
-        gameweek: 15,
-        transfers: 9
-    }
-};
-
-function openUser(key) {
-    const u = users[key];
-    if (!u) return;
-
-    document.querySelectorAll('.admin-user-row').forEach(r => r.classList.remove('selected'));
-    document.getElementById('row-' + key).classList.add('selected');
-    
-    document.getElementById('user-detail-empty').style.display = 'none';
-    document.getElementById('detail-username').textContent = u.username;
-    document.getElementById('detail-avatar').textContent = u.username[0].toUpperCase();
-    document.getElementById('detail-email').textContent = u.email;
-    document.getElementById('detail-registered').textContent = u.registered;
-    document.getElementById('detail-team').textContent = u.fantasyTeam;
-    document.getElementById('detail-points').textContent = u.totalPoints;
-    document.getElementById('detail-gameweek').textContent = 'Kolo ' + u.gameweek;
-    document.getElementById('detail-transfers').textContent = u.transfers;
-
-    const statusEl = document.getElementById('detail-status');
-    if (u.status === 'active') {
-        statusEl.textContent = 'Aktivan';
-        statusEl.className = 'badge badge--success';
-    } else {
-        statusEl.textContent = 'Deaktiviran';
-        statusEl.className = 'badge badge--danger';
-    }
-
-    const toggleBtn = document.getElementById('detail-toggle-btn');
-    if (u.status === 'active') {
-        toggleBtn.textContent = 'Deaktiviraj korisnika';
-        toggleBtn.className = 'btn btn--danger';
-    } else {
-        toggleBtn.textContent = 'Aktiviraj korisnika';
-        toggleBtn.className = 'btn btn--primary';
-    }
-
-    document.getElementById('user-detail').classList.add('active');
-}
-</script>
-{% endblock %}
-
 {% block content %}
 <div class="main-content">
     <div class="page-wrapper">
 
-        <!-- Page header -->
         <div class="page-header">
             <h1 class="page-header__title">Upravljanje Korisnicima</h1>
             <p class="page-header__sub">Pregled i upravljanje registrovanim korisnicima</p>
         </div>
 
+        <div id="admin-msg" class="alert" style="display:none;margin-bottom:16px;"></div>
+
         <div class="admin-split admin-split--wide">
 
-            <!-- Users table -->
             <div class="admin-split__list">
                 <div class="admin-split__list-header">
-                    <h2 class="admin-section__title">Svi korisnici</h2>
+                    <h2 class="admin-section__title">Svi korisnici ({{ users|length }})</h2>
                 </div>
 
-                <!-- Search -->
-                <div style="margin-bottom: 16px;">
-                    <input type="text" class="form-control" placeholder="Pretraži korisnika...">
+                <div style="margin-bottom:12px;">
+                    <input type="text" class="form-control" id="user-search"
+                           placeholder="Pretraži korisnika..." oninput="filterUsers()">
                 </div>
 
-                <!-- Filter tabs -->
                 <div class="admin-user-tabs">
-                    <button class="admin-user-tab active">Svi</button>
-                    <button class="admin-user-tab">Aktivni</button>
-                    <button class="admin-user-tab">Deaktivirani</button>
+                    <button class="admin-user-tab active" onclick="filterTab('all', this)">Svi</button>
+                    <button class="admin-user-tab" onclick="filterTab('active', this)">Aktivni</button>
+                    <button class="admin-user-tab" onclick="filterTab('inactive', this)">Deaktivirani</button>
                 </div>
 
                 <div class="table-wrapper">
@@ -139,106 +43,56 @@ function openUser(key) {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="admin-user-row" id="row-emirh" onclick="openUser('emirh')">
+                            {% for u in users %}
+                            <tr class="admin-user-row"
+                                data-status="{{ 'active' if u.is_active else 'inactive' }}"
+                                data-name="{{ u.username|lower }} {{ u.email|lower }}"
+                                onclick="loadUser({{ u.id }})">
                                 <td>
                                     <div class="admin-user">
-                                        <div class="admin-user__avatar">E</div>
-                                        <span>emirh</span>
+                                        <div class="admin-user__avatar">{{ u.username[0]|upper }}</div>
+                                        <span>{{ u.username }}</span>
                                     </div>
                                 </td>
-                                <td class="text-muted">emir@gmail.com</td>
-                                <td class="text-muted">14. Apr 2026</td>
-                                <td><span class="badge badge--success">Aktivan</span></td>
+                                <td class="text-muted">{{ u.email }}</td>
+                                <td class="text-muted">
+                                    {{ u.created_at.strftime('%d. %b %Y') if u.created_at else '—' }}
+                                </td>
                                 <td>
-                                    <div class="admin-table-actions">
-                                        <button class="btn btn--sm btn--danger">Obriši</button>
+                                    {% if u.is_active %}
+                                    <span class="badge badge--success">Aktivan</span>
+                                    {% else %}
+                                    <span class="badge badge--danger">Deaktiviran</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="admin-table-actions" onclick="event.stopPropagation()">
+                                        <button class="btn btn--sm btn--danger"
+                                                onclick="deleteUser({{ u.id }}, '{{ u.username }}')">
+                                            Obriši
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
-                            <tr class="admin-user-row" id="row-adnank" onclick="openUser('adnank')">
-                                <td>
-                                    <div class="admin-user">
-                                        <div class="admin-user__avatar">A</div>
-                                        <span>adnank</span>
-                                    </div>
-                                </td>
-                                <td class="text-muted">adnan@hotmail.com</td>
-                                <td class="text-muted">13. Apr 2026</td>
-                                <td><span class="badge badge--success">Aktivan</span></td>
-                                <td>
-                                    <div class="admin-table-actions">
-                                        <button class="btn btn--sm btn--danger">Obriši</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="admin-user-row" id="row-harisb" onclick="openUser('harisb')">
-                                <td>
-                                    <div class="admin-user">
-                                        <div class="admin-user__avatar">H</div>
-                                        <span>harisb</span>
-                                    </div>
-                                </td>
-                                <td class="text-muted">haris@gmail.com</td>
-                                <td class="text-muted">12. Apr 2026</td>
-                                <td><span class="badge badge--success">Aktivan</span></td>
-                                <td>
-                                    <div class="admin-table-actions">
-                                        <button class="btn btn--sm btn--danger">Obriši</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="admin-user-row" id="row-tarikm" onclick="openUser('tarikm')">
-                                <td>
-                                    <div class="admin-user">
-                                        <div class="admin-user__avatar">T</div>
-                                        <span>tarikm</span>
-                                    </div>
-                                </td>
-                                <td class="text-muted">tarik@gmail.com</td>
-                                <td class="text-muted">11. Apr 2026</td>
-                                <td><span class="badge badge--danger">Deaktiviran</span></td>
-                                <td>
-                                    <div class="admin-table-actions">
-                                        <button class="btn btn--sm btn--danger">Obriši</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="admin-user-row" id="row-kenanp" onclick="openUser('kenanp')">
-                                <td>
-                                    <div class="admin-user">
-                                        <div class="admin-user__avatar">K</div>
-                                        <span>kenanp</span>
-                                    </div>
-                                </td>
-                                <td class="text-muted">kenan@gmail.com</td>
-                                <td class="text-muted">10. Apr 2026</td>
-                                <td><span class="badge badge--success">Aktivan</span></td>
-                                <td>
-                                    <div class="admin-table-actions">
-                                        <button class="btn btn--sm btn--danger">Obriši</button>
-                                    </div>
-                                </td>
-                            </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
                 <div class="players-footer">
-                    <p class="text-muted">Prikazano 5 od 156 korisnika</p>
+                    <p class="text-muted" id="user-count">{{ users|length }} korisnika ukupno</p>
                 </div>
             </div>
 
-            <!-- User details -->
+            <!-- User detail panel -->
             <div class="admin-split__form">
                 <h2 class="admin-section__title">Detalji korisnika</h2>
 
-                <!-- Empty state -->
                 <div class="admin-user-empty" id="user-detail-empty">
                     <i class="fas fa-user admin-user-empty__icon"></i>
-                    <p>Odaberite korisnika za pregled detalja</p>
+                    <p>Kliknite na korisnika za pregled detalja</p>
                 </div>
 
-                <!-- User detail panel -->
-                <div class="admin-user-detail" id="user-detail">
+                <div class="admin-user-detail" id="user-detail" style="display:none;">
                     <div class="admin-user-detail__header">
                         <div class="admin-user-detail__avatar" id="detail-avatar">—</div>
                         <div>
@@ -265,28 +119,24 @@ function openUser(key) {
                             <span class="text-gold" id="detail-points">—</span>
                         </div>
                         <div class="admin-user-detail__row">
-                            <span class="text-muted">Trenutno kolo</span>
-                            <span id="detail-gameweek">—</span>
-                        </div>
-                        <div class="admin-user-detail__row">
-                            <span class="text-muted">Ukupno transfera</span>
-                            <span id="detail-transfers">—</span>
+                            <span class="text-muted">Poeni kola</span>
+                            <span id="detail-gw-points">—</span>
                         </div>
                     </div>
 
                     <div class="admin-user-detail__actions">
-                        <button class="btn btn--danger" id="detail-toggle-btn">
+                        <button class="btn btn--danger" id="detail-toggle-btn" onclick="toggleUser()">
                             Deaktiviraj korisnika
-                        </button>
-                        <button class="btn btn--ghost">
-                            <i class="fas fa-trash"></i> Obriši korisnika
                         </button>
                     </div>
                 </div>
             </div>
 
         </div>
-
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/admin_users.js') }}"></script>
 {% endblock %}

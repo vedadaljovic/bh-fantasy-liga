@@ -2,23 +2,47 @@
 
 {% block title %}Odaberi Tim — BH Fantasy Liga{% endblock %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/pick_team.css') }}">
-{% endblock %}
+{% block extra_css %}{% endblock %}
 
 {% block content %}
+
+<!-- Welcome modal -->
+<div class="modal-overlay" id="welcome-modal">
+    <div class="modal">
+        <div class="modal__header">
+            <h2 class="modal__title">Dobrodošli u BH Fantasy Ligu! 🏆</h2>
+        </div>
+        <div class="modal__body">
+            <p class="modal__intro">Prije nego što počnete, evo osnovnih pravila:</p>
+            <ul class="modal__rules">
+                <li><i class="fas fa-users"></i> Odaberite <strong>15 igrača</strong>: 2 GK · 5 DEF · 5 MID · 3 FWD</li>
+                <li><i class="fas fa-coins"></i> Budžet je <strong>100.0m KM</strong></li>
+                <li><i class="fas fa-shield-halved"></i> Maksimalno <strong>3 igrača</strong> iz istog kluba</li>
+                <li><i class="fas fa-crown"></i> <strong>Kapiten</strong> dobiva dvostruke bodove</li>
+                <li><i class="fas fa-star"></i> <strong>Potkapiten</strong> preuzima ako kapiten ne igra</li>
+                <li><i class="fas fa-right-left"></i> <strong>2 slobodna transfera</strong> po kolu · svaki dodatni = −2 boda</li>
+                <li><i class="fas fa-futbol"></i> Prvih 11 = startna postava · posljednja 4 = klupa</li>
+            </ul>
+        </div>
+        <div class="modal__footer">
+            <button class="btn btn--primary btn--lg" id="welcome-close">
+                Kreirajte Vaš Tim <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
 <div class="main-content">
     <div class="page-wrapper">
-        
-        <!-- Page header -->
+
         <div class="page-header">
             <h1 class="page-header__title">Odaberi Svoj Tim</h1>
-            <p class="page-header__sub">Odaberite 15 igrača unutar budžeta od 100.0m — 2 GK, 5 DEF, 5 MID, 3 FWD</p>
+            <p class="page-header__sub">2 GK · 5 DEF · 5 MID · 3 FWD · Budžet: 100.0m KM</p>
         </div>
 
         <div class="pick-status">
             <div class="pick-status__item">
-                <span class="pick-status__label">Budžet</span>
+                <span class="pick-status__label">Preostalo</span>
                 <span class="pick-status__value text-gold" id="remaining-budget">100.0m</span>
             </div>
             <div class="pick-status__item">
@@ -26,121 +50,84 @@
                 <span class="pick-status__value" id="spent-budget">0.0m</span>
             </div>
             <div class="pick-status__item pick-status__item--progress">
-                <span class="pick-status__label">Odabrani igrači: <strong id="progress-count">0 / 15</strong></span>
+                <span class="pick-status__label">Odabrani: <strong id="progress-count">0 / 15</strong></span>
                 <div class="pick-progress-bar">
                     <div class="pick-progress-bar__fill" id="progress-bar-fill"></div>
                 </div>
             </div>
             <div class="pick-status__item">
-                <button class="btn btn--ghost" id="save-btn" disabled>
+                <input type="text" id="team-name-input" class="form-input form-input--inline"
+                       placeholder="Naziv tima..." maxlength="50" autocomplete="off">
+            </div>
+            <div class="pick-status__item">
+                <button class="btn btn--primary" id="save-btn" onclick="saveTeam()" disabled>
                     <i class="fas fa-check"></i> Spremi tim
                 </button>
             </div>
         </div>
 
-        <div class="transfer-layout">
+        <div id="pick-error" class="alert alert--error" style="display:none;margin-bottom:12px;"></div>
 
-            <div class="transfer-pitch-wrap">
-                <div class="transfer-pitch">
+        <div class="pick-layout">
 
-                    <!-- GK row -->
-                    <div class="pitch-row">
-                        <div class="pitch-slot" id="slot-gk1" onclick="selectSlot('gk1')">
-                            <div class="pitch-slot__avatar"><i class="fas fa-plus"></i></div>
-                            <p class="pitch-slot__pos">GK</p>
-                        </div>
-                        <div class="pitch-slot" id="slot-gk2" onclick="selectSlot('gk2')">
-                            <div class="pitch-slot__avatar"><i class="fas fa-plus"></i></div>
-                            <p class="pitch-slot__pos">GK</p>
-                        </div>
+            <!-- LEFT: Pitch + bench + captain -->
+            <div class="pick-pitch-wrap">
+
+                <div class="pick-formation-bar">
+                    <span class="pick-formation-bar__label">Formacija:</span>
+                    <div class="pick-formation-options">
+                        <button class="pick-formation-btn active" data-formation="4-4-2">4-4-2</button>
+                        <button class="pick-formation-btn" data-formation="4-3-3">4-3-3</button>
+                        <button class="pick-formation-btn" data-formation="3-5-2">3-5-2</button>
+                        <button class="pick-formation-btn" data-formation="5-3-2">5-3-2</button>
+                        <button class="pick-formation-btn" data-formation="3-4-3">3-4-3</button>
                     </div>
-
-                    <!-- DEF row -->
-                    <div class="pitch-row">
-                        <div class="pitch-slot" id="slot-def1" onclick="selectSlot('def1')">
-                            <div class="pitch-slot__avatar"><i class="fas fa-plus"></i></div>
-                            <p class="pitch-slot__pos">DEF</p>
-                        </div>
-                        <div class="pitch-slot" id="slot-def2" onclick="selectSlot('def2')">
-                            <div class="pitch-slot__avatar"><i class="fas fa-plus"></i></div>
-                            <p class="pitch-slot__pos">DEF</p>
-                        </div>
-                        <div class="pitch-slot" id="slot-def3" onclick="selectSlot('def3')">
-                            <div class="pitch-slot__avatar"><i class="fas fa-plus"></i></div>
-                            <p class="pitch-slot__pos">DEF</p>
-                        </div>
-                        <div class="pitch-slot" id="slot-def4" onclick="selectSlot('def4')">
-                            <div class="pitch-slot__avatar"><i class="fas fa-plus"></i></div>
-                            <p class="pitch-slot__pos">DEF</p>
-                        </div>
-                        <div class="pitch-slot" id="slot-def5" onclick="selectSlot('def5')">
-                            <div class="pitch-slot__avatar"><i class="fas fa-plus"></i></div>
-                            <p class="pitch-slot__pos">DEF</p>
-                        </div>
-                    </div>
-
-                    <!-- MID row -->
-                    <div class="pitch-row">
-                        <div class="pitch-slot" id="slot-mid1" onclick="selectSlot('mid1')">
-                            <div class="pitch-slot__avatar"><i class="fas fa-plus"></i></div>
-                            <p class="pitch-slot__pos">MID</p>
-                        </div>
-                        <div class="pitch-slot" id="slot-mid2" onclick="selectSlot('mid2')">
-                            <div class="pitch-slot__avatar"><i class="fas fa-plus"></i></div>
-                            <p class="pitch-slot__pos">MID</p>
-                        </div>
-                        <div class="pitch-slot" id="slot-mid3" onclick="selectSlot('mid3')">
-                            <div class="pitch-slot__avatar"><i class="fas fa-plus"></i></div>
-                            <p class="pitch-slot__pos">MID</p>
-                        </div>
-                        <div class="pitch-slot" id="slot-mid4" onclick="selectSlot('mid4')">
-                            <div class="pitch-slot__avatar"><i class="fas fa-plus"></i></div>
-                            <p class="pitch-slot__pos">MID</p>
-                        </div>
-                        <div class="pitch-slot" id="slot-mid5" onclick="selectSlot('mid5')">
-                            <div class="pitch-slot__avatar"><i class="fas fa-plus"></i></div>
-                            <p class="pitch-slot__pos">MID</p>
-                        </div>
-                    </div>
-
-                    <!-- FWD row -->
-                    <div class="pitch-row">
-                        <div class="pitch-slot" id="slot-fwd1" onclick="selectSlot('fwd1')">
-                            <div class="pitch-slot__avatar"><i class="fas fa-plus"></i></div>
-                            <p class="pitch-slot__pos">FWD</p>
-                        </div>
-                        <div class="pitch-slot" id="slot-fwd2" onclick="selectSlot('fwd2')">
-                            <div class="pitch-slot__avatar"><i class="fas fa-plus"></i></div>
-                            <p class="pitch-slot__pos">FWD</p>
-                        </div>
-                        <div class="pitch-slot" id="slot-fwd3" onclick="selectSlot('fwd3')">
-                            <div class="pitch-slot__avatar"><i class="fas fa-plus"></i></div>
-                            <p class="pitch-slot__pos">FWD</p>
-                        </div>
-                    </div>
-
                 </div>
+
+                <div class="pick-pitch" id="pick-pitch">
+                    <!-- JS renders rows based on formation -->
+                </div>
+
+                <div class="pick-bench">
+                    <h3 class="pick-bench__title"><i class="fas fa-chair"></i> Klupa</h3>
+                    <div class="pick-bench__slots" id="bench-slots">
+                        <!-- 4 bench slots rendered by JS -->
+                    </div>
+                </div>
+
+                <div class="pick-captain-wrap" id="captain-wrap" style="display:none;">
+                    <h3 class="pick-captain__title">
+                        <i class="fas fa-crown"></i> Kapiten i Potkapiten
+                    </h3>
+                    <p class="pick-captain__sub">Kliknite C za kapitena, V za potkapitena.</p>
+                    <div class="pick-captain__grid" id="captain-grid"></div>
+                </div>
+
             </div>
 
-            <!-- Available players -->
-            <div class="replacements-panel" id="available-panel">
-                <div class="replacements-panel__header">
-                    <h3 class="replacements-panel__title" id="available-title">Odaberite slot</h3>
-                    <button class="replacements-panel__close" id="close-available">
-                        <i class="fas fa-times"></i>
-                    </button>
+            <!-- RIGHT: Sidebar -->
+            <div class="pick-sidebar">
+                <div class="pick-sidebar__header">
+                    <h3 class="pick-sidebar__title">Dostupni igrači</h3>
+                    <input type="text" id="player-search" class="form-input"
+                           placeholder="Pretraži po imenu..." autocomplete="off">
+                    <div class="pick-sidebar__filters">
+                        <button class="pick-filter-btn active" data-pos="ALL">Svi</button>
+                        <button class="pick-filter-btn" data-pos="GK">GK</button>
+                        <button class="pick-filter-btn" data-pos="DEF">DEF</button>
+                        <button class="pick-filter-btn" data-pos="MID">MID</button>
+                        <button class="pick-filter-btn" data-pos="FWD">FWD</button>
+                    </div>
                 </div>
-                <div class="replacements-list" id="available-list">
-                    <p class="text-muted" style="padding: 16px;">Kliknite na slot na terenu da odaberete igrača.</p>
-                </div>
+                <div class="pick-sidebar__list" id="sidebar-player-list"></div>
             </div>
 
         </div>
-
     </div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
+<script id="players-data" type="application/json">{{ players | tojson }}</script>
 <script src="{{ url_for('static', filename='js/pick_team.js') }}"></script>
 {% endblock %}

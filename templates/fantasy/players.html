@@ -6,7 +6,6 @@
 <div class="main-content">
     <div class="page-wrapper">
 
-        <!-- Page header -->
         <div class="page-header">
             <h1 class="page-header__title">Igrači</h1>
             <p class="page-header__sub">Pregled svih igrača WWin Lige BiH — statistike, cijene i fantasy poeni</p>
@@ -14,146 +13,49 @@
 
         <!-- Filters -->
         <div class="players-filters">
-            <input type="text" class="form-control players-filters__search" placeholder="Pretraži igrača...">
-            <select class="form-control players-filters__select">
+            <input type="text" id="search-input" class="form-control players-filters__search"
+                   placeholder="Pretraži igrača..." autocomplete="off">
+            <select id="filter-club" class="form-control players-filters__select">
                 <option value="">Svi klubovi</option>
-                <option>FK Sarajevo</option>
-                <option>FK Željezničar</option>
-                <option>FK Velež Mostar</option>
-                <option>FK Zrinjski Mostar</option>
-                <option>FK Borac Banja Luka</option>
-                <option>FK Široki Brijeg</option>
-                <option>FK Posušje</option>
-                <option>FK Sloga Doboj</option>
-                <option>FK Radnik Bijeljina</option>
-                <option>FK Rudar Prijedor</option>
+                {% for team in teams %}
+                <option value="{{ team.name }}">{{ team.name }}</option>
+                {% endfor %}
             </select>
-            <select class="form-control players-filters__select">
+            <select id="filter-pos" class="form-control players-filters__select">
                 <option value="">Sve pozicije</option>
-                <option>GK</option>
-                <option>DEF</option>
-                <option>MID</option>
-                <option>FWD</option>
+                <option value="GK">GK</option>
+                <option value="DEF">DEF</option>
+                <option value="MID">MID</option>
+                <option value="FWD">FWD</option>
             </select>
-            <select class="form-control players-filters__select">
+            <select id="filter-price" class="form-control players-filters__select">
                 <option value="">Cijena (sve)</option>
-                <option>Do 5.0m</option>
-                <option>5.0m — 7.0m</option>
-                <option>7.0m+</option>
+                <option value="low">Do 5.0m</option>
+                <option value="mid">5.0m — 7.0m</option>
+                <option value="high">7.0m+</option>
             </select>
         </div>
 
-        <!-- Players table -->
+        <!-- Table -->
         <div class="table-wrapper">
             <table id="players-table">
                 <thead>
                     <tr>
                         <th class="sortable" data-col="name">Igrač <i class="fas fa-sort"></i></th>
-                        <th>Klub</th>
+                        <th class="sortable" data-col="club">Klub <i class="fas fa-sort"></i></th>
                         <th class="sortable" data-col="position">Poz. <i class="fas fa-sort"></i></th>
                         <th class="sortable" data-col="price">Cijena <i class="fas fa-sort"></i></th>
-                        <th class="sortable" data-col="goals">Golovi <i class="fas fa-sort"></i></th>
-                        <th class="sortable" data-col="assists">Asist. <i class="fas fa-sort"></i></th>
                         <th class="sortable" data-col="points">Poeni <i class="fas fa-sort"></i></th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr class="player-row" data-player="bilbija">
-                        <td><strong>Nemanja Bilbija</strong></td>
-                        <td>FK Borac Banja Luka</td>
-                        <td><span class="badge badge--danger">NAP</span></td>
-                        <td>8.5m</td>
-                        <td>12</td>
-                        <td>3</td>
-                        <td><span class="text-gold">98</span></td>
-                    </tr>
-                    <tr class="player-row" data-player="hadzic">
-                        <td><strong>Emir Hadžić</strong></td>
-                        <td>FK Željezničar</td>
-                        <td><span class="badge badge--info">VEZ</span></td>
-                        <td>7.0m</td>
-                        <td>6</td>
-                        <td>8</td>
-                        <td><span class="text-gold">84</span></td>
-                    </tr>
-                    <tr class="player-row" data-player="kovacevic">
-                        <td><strong>Adnan Kovačević</strong></td>
-                        <td>FK Sarajevo</td>
-                        <td><span class="badge badge--success">ODB</span></td>
-                        <td>6.0m</td>
-                        <td>2</td>
-                        <td>5</td>
-                        <td><span class="text-gold">72</span></td>
-                    </tr>
-                    <tr class="player-row" data-player="piric">
-                        <td><strong>Kenan Pirić</strong></td>
-                        <td>FK Željezničar</td>
-                        <td><span class="badge badge--gold">GK</span></td>
-                        <td>5.5m</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td><span class="text-gold">65</span></td>
-                    </tr>
-                    <tr class="player-row" data-player="kojaševic">
-                        <td><strong>Damir Kojašević</strong></td>
-                        <td>FK Velež Mostar</td>
-                        <td><span class="badge badge--danger">NAP</span></td>
-                        <td>7.5m</td>
-                        <td>8</td>
-                        <td>4</td>
-                        <td><span class="text-gold">79</span></td>
-                    </tr>
-                    <tr class="player-row" data-player="handzic">
-                        <td><strong>Haris Handžić</strong></td>
-                        <td>FK Sarajevo</td>
-                        <td><span class="badge badge--info">VEZ</span></td>
-                        <td>6.5m</td>
-                        <td>4</td>
-                        <td>7</td>
-                        <td><span class="text-gold">71</span></td>
-                    </tr>
-                    <tr class="player-row" data-player="muharemovic">
-                        <td><strong>Tarik Muharemović</strong></td>
-                        <td>FK Zrinjski Mostar</td>
-                        <td><span class="badge badge--success">ODB</span></td>
-                        <td>5.5m</td>
-                        <td>1</td>
-                        <td>3</td>
-                        <td><span class="text-gold">60</span></td>
-                    </tr>
-                    <tr class="player-row" data-player="lucic">
-                        <td><strong>Ivan Lučić</strong></td>
-                        <td>FK Široki Brijeg</td>
-                        <td><span class="badge badge--gold">GK</span></td>
-                        <td>5.0m</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td><span class="text-gold">58</span></td>
-                    </tr>
-                    <tr class="player-row" data-player="pavlovic">
-                        <td><strong>Bojan Pavlović</strong></td>
-                        <td>FK Radnik Bijeljina</td>
-                        <td><span class="badge badge--info">VEZ</span></td>
-                        <td>5.5m</td>
-                        <td>3</td>
-                        <td>5</td>
-                        <td><span class="text-gold">55</span></td>
-                    </tr>
-                    <tr class="player-row" data-player="dupovac">
-                        <td><strong>Amer Dupovac</strong></td>
-                        <td>FK Rudar Prijedor</td>
-                        <td><span class="badge badge--danger">NAP</span></td>
-                        <td>5.0m</td>
-                        <td>4</td>
-                        <td>2</td>
-                        <td><span class="text-gold">50</span></td>
-                    </tr>
+                <tbody id="players-tbody">
+                    <!-- Rendered by JS -->
                 </tbody>
             </table>
         </div>
 
         <div class="players-footer">
-            <p class="text-muted">Prikazano 10 od 284 igrača</p>
+            <p class="text-muted" id="players-count"></p>
         </div>
 
     </div>
@@ -164,12 +66,10 @@
     <div class="player-drawer__overlay" id="drawerOverlay"></div>
     <div class="player-drawer__panel">
 
-        <!-- Close -->
         <button class="player-drawer__close" id="drawerClose">
             <i class="fas fa-times"></i>
         </button>
 
-        <!-- Player header -->
         <div class="player-drawer__header">
             <div class="player-drawer__avatar">
                 <i class="fas fa-user"></i>
@@ -184,7 +84,6 @@
             </div>
         </div>
 
-        <!-- Season stats -->
         <div class="player-drawer__section">
             <h3 class="player-drawer__section-title">Statistike sezone</h3>
             <div class="player-drawer__stats">
@@ -215,7 +114,6 @@
             </div>
         </div>
 
-        <!-- Fantasy points -->
         <div class="player-drawer__section">
             <h3 class="player-drawer__section-title">Fantasy poeni</h3>
             <div class="player-drawer__total">
@@ -224,170 +122,11 @@
             </div>
         </div>
 
-        <!-- Points per gameweek chart -->
-        <div class="player-drawer__section">
-            <h3 class="player-drawer__section-title">Poeni po kolu</h3>
-            <div class="player-drawer__chart" id="drawerChart"></div>
-        </div>
-
     </div>
 </div>
-
 {% endblock %}
 
 {% block extra_js %}
-<script>
-const players = {
-    bilbija: {
-        name: "Nemanja Bilbija",
-        club: "FK Borac Banja Luka",
-        position: "NAP",
-        positionClass: "badge--danger",
-        price: "8.5m",
-        goals: 12, assists: 3, minutes: 1280, cleanSheets: 0, yellows: 2, reds: 0,
-        totalPoints: 98,
-        gameweekPoints: [4, 8, 6, 12, 5, 9, 7, 11, 6, 8, 5, 7, 4, 6, 0]
-    },
-    hadzic: {
-        name: "Emir Hadžić",
-        club: "FK Željezničar",
-        position: "VEZ",
-        positionClass: "badge--info",
-        price: "7.0m",
-        goals: 6, assists: 8, minutes: 1350, cleanSheets: 0, yellows: 3, reds: 0,
-        totalPoints: 84,
-        gameweekPoints: [6, 5, 7, 4, 8, 3, 9, 5, 6, 7, 4, 8, 5, 6, 5]
-    },
-    kovacevic: {
-        name: "Adnan Kovačević",
-        club: "FK Sarajevo",
-        position: "ODB",
-        positionClass: "badge--success",
-        price: "6.0m",
-        goals: 2, assists: 5, minutes: 1260, cleanSheets: 4, yellows: 1, reds: 0,
-        totalPoints: 72,
-        gameweekPoints: [5, 4, 6, 3, 7, 4, 5, 6, 4, 5, 3, 7, 5, 4, 4]
-    },
-    piric: {
-        name: "Kenan Pirić",
-        club: "FK Željezničar",
-        position: "GK",
-        positionClass: "badge--gold",
-        price: "5.5m",
-        goals: 0, assists: 0, minutes: 1350, cleanSheets: 5, yellows: 0, reds: 0,
-        totalPoints: 65,
-        gameweekPoints: [4, 3, 5, 4, 6, 3, 5, 4, 3, 5, 4, 6, 4, 3, 6]
-    },
-    kojaševic: {
-        name: "Damir Kojašević",
-        club: "FK Velež Mostar",
-        position: "NAP",
-        positionClass: "badge--danger",
-        price: "7.5m",
-        goals: 8, assists: 4, minutes: 1180, cleanSheets: 0, yellows: 4, reds: 1,
-        totalPoints: 79,
-        gameweekPoints: [7, 5, 6, 4, 8, 5, 7, 4, 6, 5, 7, 4, 6, 5, 0]
-    },
-    handzic: {
-        name: "Haris Handžić",
-        club: "FK Sarajevo",
-        position: "VEZ",
-        positionClass: "badge--info",
-        price: "6.5m",
-        goals: 4, assists: 7, minutes: 1300, cleanSheets: 0, yellows: 2, reds: 0,
-        totalPoints: 71,
-        gameweekPoints: [5, 4, 6, 3, 5, 4, 7, 5, 4, 6, 4, 5, 4, 5, 4]
-    },
-    muharemovic: {
-        name: "Tarik Muharemović",
-        club: "FK Zrinjski Mostar",
-        position: "ODB",
-        positionClass: "badge--success",
-        price: "5.5m",
-        goals: 1, assists: 3, minutes: 1240, cleanSheets: 3, yellows: 2, reds: 0,
-        totalPoints: 60,
-        gameweekPoints: [3, 4, 5, 3, 4, 5, 4, 3, 5, 4, 3, 5, 4, 4, 4]
-    },
-    lucic: {
-        name: "Ivan Lučić",
-        club: "FK Široki Brijeg",
-        position: "GK",
-        positionClass: "badge--gold",
-        price: "5.0m",
-        goals: 0, assists: 0, minutes: 1350, cleanSheets: 4, yellows: 0, reds: 0,
-        totalPoints: 58,
-        gameweekPoints: [3, 4, 4, 3, 5, 3, 4, 4, 3, 4, 4, 5, 3, 4, 5]
-    },
-    pavlovic: {
-        name: "Bojan Pavlović",
-        club: "FK Radnik Bijeljina",
-        position: "VEZ",
-        positionClass: "badge--info",
-        price: "5.5m",
-        goals: 3, assists: 5, minutes: 1200, cleanSheets: 0, yellows: 3, reds: 0,
-        totalPoints: 55,
-        gameweekPoints: [3, 4, 4, 3, 5, 3, 4, 4, 3, 4, 3, 5, 3, 4, 3]
-    },
-    dupovac: {
-        name: "Amer Dupovac",
-        club: "FK Rudar Prijedor",
-        position: "NAP",
-        positionClass: "badge--danger",
-        price: "5.0m",
-        goals: 4, assists: 2, minutes: 1100, cleanSheets: 0, yellows: 1, reds: 0,
-        totalPoints: 50,
-        gameweekPoints: [3, 4, 3, 4, 4, 3, 4, 3, 3, 4, 3, 4, 3, 3, 4]
-    }
-};
-
-function openDrawer(playerKey) {
-    const p = players[playerKey];
-    if (!p) return;
-
-    document.getElementById('drawerName').textContent = p.name;
-    document.getElementById('drawerClub').textContent = p.club;
-    document.getElementById('drawerPrice').textContent = p.price;
-    document.getElementById('drawerGoals').textContent = p.goals;
-    document.getElementById('drawerAssists').textContent = p.assists;
-    document.getElementById('drawerMinutes').textContent = p.minutes + "'";
-    document.getElementById('drawerCleanSheets').textContent = p.cleanSheets;
-    document.getElementById('drawerYellows').textContent = p.yellows;
-    document.getElementById('drawerReds').textContent = p.reds;
-    document.getElementById('drawerTotalPoints').textContent = p.totalPoints;
-
-    const posEl = document.getElementById('drawerPosition');
-    posEl.textContent = p.position;
-    posEl.className = 'badge ' + p.positionClass;
-
-    // Build chart
-    const max = Math.max(...p.gameweekPoints);
-    const chart = document.getElementById('drawerChart');
-    chart.innerHTML = p.gameweekPoints.map((pts, i) => `
-        <div class="chart-bar-wrap">
-            <span class="chart-bar-value">${pts}</span>
-            <div class="chart-bar" style="height: ${max > 0 ? (pts / max) * 100 : 0}%"></div>
-            <span class="chart-bar-label">${i + 1}</span>
-        </div>
-    `).join('');
-
-    document.getElementById('playerDrawer').classList.add('active');
-    document.body.style.overflow = 'hidden';
-}
-
-function closeDrawer() {
-    document.getElementById('playerDrawer').classList.remove('active');
-    document.body.style.overflow = '';
-}
-
-document.querySelectorAll('.player-row').forEach(row => {
-    row.addEventListener('click', () => openDrawer(row.dataset.player));
-});
-
-document.getElementById('drawerClose').addEventListener('click', closeDrawer);
-document.getElementById('drawerOverlay').addEventListener('click', closeDrawer);
-
-document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') closeDrawer();
-});
-</script>
+<script id="players-data" type="application/json">{{ players | tojson }}</script>
+<script src="{{ url_for('static', filename='js/players.js') }}"></script>
 {% endblock %}

@@ -3,129 +3,67 @@
 {% block title %}Vijesti — BH Fantasy Liga{% endblock %}
 
 {% block content %}
-
 <div class="main-content">
     <div class="page-wrapper">
 
-        <!-- Page header -->
-        <div class="page-header">
-            <h1 class="page-header__title">Vijesti</h1>
-            <p class="page-header__sub">Pratite najnovije vijesti iz WWin Lige Bosne i Hercegovine</p>
+        <div class="page-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+            <div>
+                <h1 class="page-header__title">Vijesti</h1>
+                <p class="page-header__sub">Pratite najnovije vijesti iz WWin Lige Bosne i Hercegovine</p>
+            </div>
+            <a href="{{ url_for('news.rss') }}" class="btn btn--outline btn--sm" target="_blank">
+                <i class="fas fa-rss"></i> RSS Feed
+            </a>
         </div>
 
-        <!-- News grid -->
+        {% if articles %}
         <div class="news-grid">
-
-            <!-- Article card 1 -->
+            {% for a in articles %}
             <article class="news-card">
                 <div class="news-card__image">
-                    <img src="{{ url_for('static', filename='images/BHFantasyLiga.png') }}" alt="Article cover">
-                    <span class="news-card__badge">Liga</span>
+                    {% if a.image_url %}
+                    <img src="{{ a.image_url }}" alt="{{ a.title }}"
+                         onerror="this.src='{{ url_for('static', filename='images/BHFantasyLiga.png') }}'">
+                    {% else %}
+                    <img src="{{ url_for('static', filename='images/BHFantasyLiga.png') }}" alt="{{ a.title }}">
+                    {% endif %}
+                    <span class="news-card__badge">{{ a.category or 'Vijesti' }}</span>
                 </div>
                 <div class="news-card__content">
                     <div class="news-card__meta">
-                        <span class="news-card__date">7. Apr 2026</span>
-                        <span class="news-card__category">Vijesti</span>
+                        <span class="news-card__date">{{ a.created_at.strftime('%d. %b %Y') }}</span>
+                        <span class="news-card__category">{{ a.category or 'Vijesti' }}</span>
                     </div>
-                    <h2 class="news-card__title">Kolo 15 je počelo sa velikim iznenađenjima</h2>
-                    <p class="news-card__excerpt">Rezultati drugog dana desete sedmice doneli su dramatične preokrete. Čitaj više o zapisima...</p>
-                    <a href="{{ url_for('news.article', article_id=1) }}" class="news-card__link">Pročitaj više <i class="fas fa-arrow-right"></i></a>
+                    <h2 class="news-card__title">{{ a.title }}</h2>
+                    <p class="news-card__excerpt">
+                        {{ a.excerpt or (a.content[:180] + '...') }}
+                    </p>
+                    <a href="{{ url_for('news.article', article_id=a.id) }}" class="news-card__link">
+                        Pročitaj više <i class="fas fa-arrow-right"></i>
+                    </a>
                 </div>
             </article>
-
-            <!-- Article card 2 -->
-            <article class="news-card">
-                <div class="news-card__image">
-                    <img src="{{ url_for('static', filename='images/BHFantasyLiga.png') }}" alt="Article cover">
-                    <span class="news-card__badge">Igrač</span>
-                </div>
-                <div class="news-card__content">
-                    <div class="news-card__meta">
-                        <span class="news-card__date">6. Apr 2026</span>
-                        <span class="news-card__category">Intervju</span>
-                    </div>
-                    <h2 class="news-card__title">Intervju sa najboljim strijelcem sezone</h2>
-                    <p class="news-card__excerpt">Saznajte kako je Nemanja Bilbija dostigao 15 golova. Ekskluzivni razgovor sa tom...</p>
-                    <a href="{{ url_for('news.article', article_id=1) }}" class="news-card__link">Pročitaj više <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </article>
-
-            <!-- Article card 3 -->
-            <article class="news-card">
-                <div class="news-card__image">
-                    <img src="{{ url_for('static', filename='images/BHFantasyLiga.png') }}" alt="Article cover">
-                    <span class="news-card__badge">Transfer</span>
-                </div>
-                <div class="news-card__content">
-                    <div class="news-card__meta">
-                        <span class="news-card__date">5. Apr 2026</span>
-                        <span class="news-card__category">Transfer</span>
-                    </div>
-                    <h2 class="news-card__title">Vruća transfer tržišta: Analiza mogućih transfera</h2>
-                    <p class="news-card__excerpt">Koji igrači bi mogli biti prebačeni pred završetak sezone? Procjena šansi...</p>
-                    <a href="{{ url_for('news.article', article_id=1) }}" class="news-card__link">Pročitaj više <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </article>
-
-            <!-- Article card 4 -->
-            <article class="news-card">
-                <div class="news-card__image">
-                    <img src="{{ url_for('static', filename='images/BHFantasyLiga.png') }}" alt="Article cover">
-                    <span class="news-card__badge">Analiza</span>
-                </div>
-                <div class="news-card__content">
-                    <div class="news-card__meta">
-                        <span class="news-card__date">4. Apr 2026</span>
-                        <span class="news-card__category">Analiza</span>
-                    </div>
-                    <h2 class="news-card__title">Taktička analiza: Kako se mijenja Liga ove sezone</h2>
-                    <p class="news-card__excerpt">Detaljne statistike i analiza taktičkih promjena koje se vide u ligi...</p>
-                    <a href="{{ url_for('news.article', article_id=1) }}" class="news-card__link">Pročitaj više <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </article>
-
-            <!-- Article card 5 -->
-            <article class="news-card">
-                <div class="news-card__image">
-                    <img src="{{ url_for('static', filename='images/BHFantasyLiga.png') }}" alt="Article cover">
-                    <span class="news-card__badge">Kolo</span>
-                </div>
-                <div class="news-card__content">
-                    <div class="news-card__meta">
-                        <span class="news-card__date">3. Apr 2026</span>
-                        <span class="news-card__category">Vijesti</span>
-                    </div>
-                    <h2 class="news-card__title">Kolo 14: Pregled svih rezultata i najboljih performansi</h2>
-                    <p class="news-card__excerpt">Sve vijesti i analiza od prošle sedmice. Ko je dao najviše poena...</p>
-                    <a href="{{ url_for('news.article', article_id=1) }}" class="news-card__link">Pročitaj više <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </article>
-
-            <!-- Article card 6 -->
-            <article class="news-card">
-                <div class="news-card__image">
-                    <img src="{{ url_for('static', filename='images/BHFantasyLiga.png') }}" alt="Article cover">
-                    <span class="news-card__badge">Uživo</span>
-                </div>
-                <div class="news-card__content">
-                    <div class="news-card__meta">
-                        <span class="news-card__date">2. Apr 2026</span>
-                        <span class="news-card__category">Direktan prijenos</span>
-                    </div>
-                    <h2 class="news-card__title">Uživo: Sve što se desilo tokom sezone do sada</h2>
-                    <p class="news-card__excerpt">Pratite sve ključne momente i preokrete iz lige sa videoprima...</p>
-                    <a href="{{ url_for('news.article', article_id=1) }}" class="news-card__link">Pročitaj više <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </article>
-
+            {% endfor %}
         </div>
 
-        <!-- Load more button -->
         <div class="news-footer">
-            <button class="btn btn--primary btn--lg">Učitaj još vijesti</button>
+            {% if has_more %}
+            <a href="{{ url_for('news.feed', page=page+1) }}" class="btn btn--primary btn--lg">
+                Učitaj još vijesti
+            </a>
+            {% else %}
+            <p class="text-muted">Prikazano svih {{ total }} vijesti.</p>
+            {% endif %}
         </div>
+
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-newspaper empty-state__icon"></i>
+            <h2 class="empty-state__title">Nema vijesti</h2>
+            <p class="empty-state__sub">Vijesti će se pojaviti nakon što se pokrene scraper.</p>
+        </div>
+        {% endif %}
 
     </div>
 </div>
-
 {% endblock %}

@@ -3,255 +3,137 @@
 {% block title %}Rang Lista — BH Fantasy Liga{% endblock %}
 
 {% block content %}
-
 <div class="main-content">
     <div class="page-wrapper">
 
-        <!-- Page header -->
         <div class="page-header">
             <h1 class="page-header__title">Globalna Rang Lista</h1>
-            <p class="page-header__sub">Pogledajte kako se vaši konkurenti rangiraju na listi. Kolo 15 od 38.</p>
+            <p class="page-header__sub">
+                Pogledajte kako se vaši konkurenti rangiraju na listi.
+                {% if active_gameweek %}Kolo {{ active_gameweek.number }} od 36.{% endif %}
+            </p>
         </div>
 
-        <!-- Leaderboard controls -->
+        {% if leaderboard %}
+
+        <!-- Search -->
         <div class="leaderboard-controls">
             <div class="leaderboard-controls__left">
-                <input type="text" class="leaderboard-controls__search" placeholder="Pretraži tim...">
-            </div>
-            <div class="leaderboard-controls__right">
-                <select class="leaderboard-controls__filter">
-                    <option>Sortiranje: Poeni (↓)</option>
-                    <option>Sortiranje: Poeni (↑)</option>
-                    <option>Sortiranje: Naziv A-Ž</option>
-                </select>
+                <input type="text" id="lb-search" class="leaderboard-controls__search"
+                       placeholder="Pretraži tim..." autocomplete="off">
             </div>
         </div>
 
         <!-- Top 3 podium -->
+        {% if leaderboard|length >= 3 %}
         <div class="leaderboard-podium">
 
             <!-- 2nd place -->
             <div class="podium-card podium-card--second">
                 <div class="podium-card__rank">2</div>
-                <div class="podium-card__badge">
-                    <i class="fas fa-medal"></i>
-                </div>
-                <h3 class="podium-card__title">Fantastičan Tim</h3>
-                <p class="podium-card__owner">Igrač: Senad Lulić</p>
-                <p class="podium-card__points">4,250 poena</p>
+                <div class="podium-card__badge"><i class="fas fa-medal"></i></div>
+                <h3 class="podium-card__title">{{ leaderboard[1].team_name }}</h3>
+                <p class="podium-card__owner">{{ leaderboard[1].username }}</p>
+                <p class="podium-card__points">{{ leaderboard[1].total_points }} poena</p>
             </div>
 
             <!-- 1st place -->
             <div class="podium-card podium-card--first">
                 <div class="podium-card__rank">1</div>
-                <div class="podium-card__badge">
-                    <i class="fas fa-crown"></i>
-                </div>
-                <h3 class="podium-card__title">Kralj Fantazija</h3>
-                <p class="podium-card__owner">Igrač: Emir Bešić</p>
-                <p class="podium-card__points">4,890 poena</p>
+                <div class="podium-card__badge"><i class="fas fa-crown"></i></div>
+                <h3 class="podium-card__title">{{ leaderboard[0].team_name }}</h3>
+                <p class="podium-card__owner">{{ leaderboard[0].username }}</p>
+                <p class="podium-card__points">{{ leaderboard[0].total_points }} poena</p>
             </div>
 
             <!-- 3rd place -->
             <div class="podium-card podium-card--third">
                 <div class="podium-card__rank">3</div>
-                <div class="podium-card__badge">
-                    <i class="fas fa-medal"></i>
-                </div>
-                <h3 class="podium-card__title">Pobjednički Tim</h3>
-                <p class="podium-card__owner">Igrač: Darko Darkić</p>
-                <p class="podium-card__points">4,120 poena</p>
+                <div class="podium-card__badge"><i class="fas fa-medal"></i></div>
+                <h3 class="podium-card__title">{{ leaderboard[2].team_name }}</h3>
+                <p class="podium-card__owner">{{ leaderboard[2].username }}</p>
+                <p class="podium-card__points">{{ leaderboard[2].total_points }} poena</p>
             </div>
 
         </div>
+        {% endif %}
 
-        <!-- Leaderboard table -->
+        <!-- Table (rank 4+) -->
         <div class="table-wrapper leaderboard-table">
-            <table>
+            <table id="lb-table">
                 <thead>
                     <tr>
-                        <th style="width: 60px;">Rang</th>
+                        <th style="width:60px;">Rang</th>
                         <th>Tim</th>
                         <th>Vlasnik</th>
-                        <th style="width: 120px;">Poeni</th>
-                        <th style="width: 100px;">Kolo (Tačka)</th>
-                        <th style="width: 120px;">Promjena</th>
+                        <th style="width:120px;">Ukupno</th>
+                        <th style="width:120px;">Ovo kolo</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Row 4 -->
-                    <tr>
-                        <td><strong>4</strong></td>
+                    {% for entry in leaderboard %}
+                    {% if loop.index > 3 %}
+                    <tr class="lb-row {% if entry.is_current_user %}lb-row--me{% endif %}"
+                        data-name="{{ entry.team_name|lower }} {{ entry.username|lower }}">
+                        <td><strong>{{ entry.rank }}</strong></td>
                         <td>
                             <div class="leaderboard-team">
-                                <div class="leaderboard-team__avatar">AO</div>
+                                <div class="leaderboard-team__avatar">
+                                    {{ entry.team_name[:2]|upper }}
+                                </div>
                                 <div class="leaderboard-team__info">
-                                    <p class="leaderboard-team__name">Amar Osim GOAT</p>
-                                    <p class="leaderboard-team__badge">Kol. 12.</p>
+                                    <p class="leaderboard-team__name">
+                                        {{ entry.team_name }}
+                                        {% if entry.is_current_user %}
+                                        <span class="badge badge--gold" style="font-size:10px;margin-left:6px;">Vi</span>
+                                        {% endif %}
+                                    </p>
                                 </div>
                             </div>
                         </td>
-                        <td>Tarik Rizvić</td>
-                        <td><span class="text-gold">3,980</span></td>
-                        <td>+78</td>
-                        <td><span class="leaderboard-change leaderboard-change--up">↑ 8 mjesta</span></td>
+                        <td>{{ entry.username }}</td>
+                        <td><span class="text-gold">{{ entry.total_points }}</span></td>
+                        <td>+{{ entry.gameweek_points }}</td>
                     </tr>
-
-                    <!-- Row 5 -->
-                    <tr>
-                        <td><strong>5</strong></td>
-                        <td>
-                            <div class="leaderboard-team">
-                                <div class="leaderboard-team__avatar">DJ</div>
-                                <div class="leaderboard-team__info">
-                                    <p class="leaderboard-team__name">Dream Jaguari</p>
-                                    <p class="leaderboard-team__badge">Kol. 5.</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td>Amar Šuvalija</td>
-                        <td><span class="text-gold">3,865</span></td>
-                        <td>+52</td>
-                        <td><span class="leaderboard-change leaderboard-change--down">↓ 3 mjesta</span></td>
-                    </tr>
-
-                    <!-- Row 6 -->
-                    <tr>
-                        <td><strong>6</strong></td>
-                        <td>
-                            <div class="leaderboard-team">
-                                <div class="leaderboard-team__avatar">SN</div>
-                                <div class="leaderboard-team__info">
-                                    <p class="leaderboard-team__name">Svi u Napad</p>
-                                    <p class="leaderboard-team__badge">Kol. 8.</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td>Hasan Sačić</td>
-                        <td><span class="text-gold">3,742</span></td>
-                        <td>+65</td>
-                        <td><span class="leaderboard-change leaderboard-change--neutral">→ Isto</span></td>
-                    </tr>
-
-                    <!-- Row 7 -->
-                    <tr>
-                        <td><strong>7</strong></td>
-                        <td>
-                            <div class="leaderboard-team">
-                                <div class="leaderboard-team__avatar">SG</div>
-                                <div class="leaderboard-team__info">
-                                    <p class="leaderboard-team__name">Sarajevski Golub</p>
-                                    <p class="leaderboard-team__badge">Kol. 3.</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td>Mustafa Sefo</td>
-                        <td><span class="text-gold">3,621</span></td>
-                        <td>+45</td>
-                        <td><span class="leaderboard-change leaderboard-change--up">↑ 2 mjesta</span></td>
-                    </tr>
-
-                    <!-- Row 8 -->
-                    <tr>
-                        <td><strong>8</strong></td>
-                        <td>
-                            <div class="leaderboard-team">
-                                <div class="leaderboard-team__avatar">NU</div>
-                                <div class="leaderboard-team__info">
-                                    <p class="leaderboard-team__name">Neustrašivi</p>
-                                    <p class="leaderboard-team__badge">Kol. 11.</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td>Mirza Dacić</td>
-                        <td><span class="text-gold">3,498</span></td>
-                        <td>+71</td>
-                        <td><span class="leaderboard-change leaderboard-change--down">↓ 5 mjesta</span></td>
-                    </tr>
-
-                    <!-- Row 9 -->
-                    <tr>
-                        <td><strong>9</strong></td>
-                        <td>
-                            <div class="leaderboard-team">
-                                <div class="leaderboard-team__avatar">VP</div>
-                                <div class="leaderboard-team__info">
-                                    <p class="leaderboard-team__name">Vaterpolisti</p>
-                                    <p class="leaderboard-team__badge">Kol. 6.</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td>Ismir Katić</td>
-                        <td><span class="text-gold">3,354</span></td>
-                        <td>+38</td>
-                        <td><span class="leaderboard-change leaderboard-change--up">↑ 1 mjesto</span></td>
-                    </tr>
-
-                    <!-- Row 10 -->
-                    <tr>
-                        <td><strong>10</strong></td>
-                        <td>
-                            <div class="leaderboard-team">
-                                <div class="leaderboard-team__avatar">ZB</div>
-                                <div class="leaderboard-team__info">
-                                    <p class="leaderboard-team__name">Zmajevi od Bosne</p>
-                                    <p class="leaderboard-team__badge">Kol. 2.</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td>Davud Rahmanović</td>
-                        <td><span class="text-gold">3,215</span></td>
-                        <td>+42</td>
-                        <td><span class="leaderboard-change leaderboard-change--neutral">→ Isto</span></td>
-                    </tr>
-
-                    <!-- Row 11 -->
-                    <tr>
-                        <td><strong>11</strong></td>
-                        <td>
-                            <div class="leaderboard-team">
-                                <div class="leaderboard-team__avatar">HT</div>
-                                <div class="leaderboard-team__info">
-                                    <p class="leaderboard-team__name">Hrasnički Tigar</p>
-                                    <p class="leaderboard-team__badge">Kol. 4.</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td>Petar Rakitić</td>
-                        <td><span class="text-gold">3,089</span></td>
-                        <td>+55</td>
-                        <td><span class="leaderboard-change leaderboard-change--down">↓ 2 mjesta</span></td>
-                    </tr>
-
-                    <!-- Row 12 -->
-                    <tr>
-                        <td><strong>12</strong></td>
-                        <td>
-                            <div class="leaderboard-team">
-                                <div class="leaderboard-team__avatar">II</div>
-                                <div class="leaderboard-team__info">
-                                    <p class="leaderboard-team__name">Igman Ilidža</p>
-                                    <p class="leaderboard-team__badge">Kol. 7.</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td>Vedad Ćataković</td>
-                        <td><span class="text-gold">2,956</span></td>
-                        <td>+61</td>
-                        <td><span class="leaderboard-change leaderboard-change--up">↑ 4 mjesta</span></td>
-                    </tr>
-
+                    {% endif %}
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
 
-        <!-- Load more -->
-        <div class="leaderboard-footer">
-            <button class="btn btn--primary btn--lg">Učitaj više timova</button>
-            <p class="leaderboard-footer__info">Prikazano 12 od 156 timova</p>
+        <!-- My rank highlight (if outside top 50) -->
+        {% if my_rank and my_rank > 50 %}
+        <div class="leaderboard-my-rank">
+            <i class="fas fa-map-marker-alt"></i>
+            Vaš rang: <strong>{{ my_rank }}. mjesto</strong>
         </div>
+        {% endif %}
+
+        <div class="leaderboard-footer">
+            <p class="leaderboard-footer__info">
+                Prikazano {{ leaderboard|length }} timova
+            </p>
+        </div>
+
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-trophy empty-state__icon"></i>
+            <h2 class="empty-state__title">Rang lista je prazna</h2>
+            <p class="empty-state__sub">Još niko nije kreirao fantasy tim.</p>
+        </div>
+        {% endif %}
 
     </div>
 </div>
+{% endblock %}
 
+{% block extra_js %}
+<script>
+document.getElementById('lb-search')?.addEventListener('input', function() {
+    const q = this.value.toLowerCase();
+    document.querySelectorAll('.lb-row').forEach(row => {
+        row.style.display = row.dataset.name.includes(q) ? '' : 'none';
+    });
+});
+</script>
 {% endblock %}

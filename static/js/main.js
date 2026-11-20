@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Hamburger menu
+    //Hamburger menu
     const hamburgerBtn = document.getElementById('hamburgerBtn');
     const navMenu = document.getElementById('navMenu');
 
@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // User dropdown
+    //User dropdown
     const userDropdownToggle = document.getElementById('userDropdownToggle');
 
     if (userDropdownToggle) {

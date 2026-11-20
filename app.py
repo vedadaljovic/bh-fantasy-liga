@@ -4,7 +4,7 @@ load_dotenv()
 from flask import Flask, redirect, url_for
 from flask_login import LoginManager
 from config import config
-from models.database import db, User
+from models.database import db, User, Team, Player, Gameweek, Fixture, FantasyTeam, FantasyTeamPlayer, FantasyTeamGameweek, Transfer, PlayerGameweekStats, News, MatchEvent, MatchLineup
 
 def create_app(config_name=None):
     if config_name is None:
@@ -15,13 +15,13 @@ def create_app(config_name=None):
                 static_folder='static',
                 static_url_path='/static')
     
-    # Load configuration
+    #Load configuration
     app.config.from_object(config[config_name])
     
     # Initialize extensions
     db.init_app(app)
     
-    # Initialize Flask-Login
+    #Initialize Flask-Login
     login_manager = LoginManager()
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
@@ -30,13 +30,13 @@ def create_app(config_name=None):
     
     @login_manager.user_loader
     def load_user(user_id):
-        return User.query.get(int(user_id))
+        return db.session.get(User, int(user_id))
     
-    # Create tables
+    #Create tables
     with app.app_context():
         db.create_all()
     
-    # Register blueprints
+    #Register blueprints
     from routes.auth import auth_bp
     from routes.news import news_bp
     from routes.fantasy import fantasy_bp

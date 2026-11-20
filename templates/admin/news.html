@@ -6,18 +6,18 @@
 <div class="main-content">
     <div class="page-wrapper">
 
-        <!-- Page header -->
         <div class="page-header">
             <h1 class="page-header__title">Upravljanje Vijestima</h1>
             <p class="page-header__sub">Kreirajte i upravljajte vijestima WWin Lige BiH</p>
         </div>
 
+        <div id="admin-msg" class="alert" style="display:none;margin-bottom:16px;"></div>
+
         <div class="admin-split">
 
-            <!-- Articles list -->
             <div class="admin-split__list">
                 <div class="admin-split__list-header">
-                    <h2 class="admin-section__title">Sve vijesti</h2>
+                    <h2 class="admin-section__title">Sve vijesti ({{ articles|length }})</h2>
                 </div>
                 <div class="table-wrapper">
                     <table>
@@ -26,120 +26,89 @@
                                 <th>Naslov</th>
                                 <th>Kategorija</th>
                                 <th>Datum</th>
+                                <th>Izvor</th>
                                 <th>Akcije</th>
                             </tr>
                         </thead>
                         <tbody>
+                            {% for a in articles %}
                             <tr>
-                                <td><strong>Kolo 15 je počelo sa velikim iznenađenjima</strong></td>
-                                <td><span class="badge badge--info">Vijesti</span></td>
-                                <td class="text-muted">7. Apr 2026</td>
+                                <td>
+                                    <a href="{{ url_for('news.article', article_id=a.id) }}"
+                                       target="_blank" style="color:var(--white);">
+                                        <strong>{{ a.title[:60] }}{% if a.title|length > 60 %}…{% endif %}</strong>
+                                    </a>
+                                </td>
+                                <td><span class="badge badge--info">{{ a.category or 'Vijesti' }}</span></td>
+                                <td class="text-muted">
+                                    {{ a.created_at.strftime('%d. %b %Y') if a.created_at else '—' }}
+                                </td>
+                                <td class="text-muted">
+                                    {% if a.source_url %}
+                                    <span class="badge badge--grey">Scraper</span>
+                                    {% else %}
+                                    <span class="badge badge--success">Admin</span>
+                                    {% endif %}
+                                </td>
                                 <td>
                                     <div class="admin-table-actions">
-                                        <button class="btn btn--sm btn--outline">Uredi</button>
-                                        <button class="btn btn--sm btn--danger">Obriši</button>
+                                        <button class="btn btn--sm btn--danger"
+                                                onclick="deleteArticle({{ a.id }}, '{{ a.title[:30]|replace("'", "") }}')">
+                                            Obriši
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
-                                <td><strong>Intervju sa najboljim strijelcem sezone</strong></td>
-                                <td><span class="badge badge--gold">Intervju</span></td>
-                                <td class="text-muted">6. Apr 2026</td>
-                                <td>
-                                    <div class="admin-table-actions">
-                                        <button class="btn btn--sm btn--outline">Uredi</button>
-                                        <button class="btn btn--sm btn--danger">Obriši</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>Vruća transfer tržišta: Analiza mogućih transfera</strong></td>
-                                <td><span class="badge badge--grey">Transfer</span></td>
-                                <td class="text-muted">5. Apr 2026</td>
-                                <td>
-                                    <div class="admin-table-actions">
-                                        <button class="btn btn--sm btn--outline">Uredi</button>
-                                        <button class="btn btn--sm btn--danger">Obriši</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>Taktička analiza: Kako se mijenja Liga ove sezone</strong></td>
-                                <td><span class="badge badge--success">Analiza</span></td>
-                                <td class="text-muted">4. Apr 2026</td>
-                                <td>
-                                    <div class="admin-table-actions">
-                                        <button class="btn btn--sm btn--outline">Uredi</button>
-                                        <button class="btn btn--sm btn--danger">Obriši</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>Kolo 14: Pregled svih rezultata</strong></td>
-                                <td><span class="badge badge--info">Vijesti</span></td>
-                                <td class="text-muted">3. Apr 2026</td>
-                                <td>
-                                    <div class="admin-table-actions">
-                                        <button class="btn btn--sm btn--outline">Uredi</button>
-                                        <button class="btn btn--sm btn--danger">Obriši</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>Uživo: Sve što se desilo tokom sezone</strong></td>
-                                <td><span class="badge badge--danger">Uživo</span></td>
-                                <td class="text-muted">2. Apr 2026</td>
-                                <td>
-                                    <div class="admin-table-actions">
-                                        <button class="btn btn--sm btn--outline">Uredi</button>
-                                        <button class="btn btn--sm btn--danger">Obriši</button>
-                                    </div>
-                                </td>
-                            </tr>
+                            {% else %}
+                            <tr><td colspan="5" class="text-muted" style="text-align:center;padding:16px;">
+                                Nema vijesti. Pokrenite scraper ili dodajte vijest ručno.
+                            </td></tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- Create form -->
             <div class="admin-split__form">
                 <h2 class="admin-section__title">Nova vijest</h2>
                 <div class="card">
                     <div class="form-group">
                         <label class="form-group__label">Naslov</label>
-                        <input type="text" class="form-control" placeholder="Naslov vijesti...">
+                        <input type="text" id="n-title" class="form-control" placeholder="Naslov vijesti...">
                     </div>
                     <div class="form-group">
                         <label class="form-group__label">Kategorija</label>
-                        <select class="form-control">
-                            <option value="vijesti">Vijesti</option>
-                            <option value="intervju">Intervju</option>
-                            <option value="transfer">Transfer</option>
-                            <option value="analiza">Analiza</option>
-                            <option value="uzivo">Uživo</option>
+                        <select id="n-category" class="form-control">
+                            <option value="Vijesti">Vijesti</option>
+                            <option value="Intervju">Intervju</option>
+                            <option value="Transfer">Transfer</option>
+                            <option value="Analiza">Analiza</option>
+                            <option value="Uživo">Uživo</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label class="form-group__label">Slika (URL)</label>
-                        <input type="text" class="form-control" placeholder="https://...">
+                        <input type="text" id="n-image" class="form-control" placeholder="https://...">
                     </div>
                     <div class="form-group">
                         <label class="form-group__label">Sadržaj</label>
-                        <textarea class="form-control admin-news-textarea" placeholder="Unesite sadržaj vijesti..."></textarea>
+                        <textarea id="n-content" class="form-control admin-news-textarea"
+                                  placeholder="Unesite sadržaj vijesti..." rows="8"></textarea>
                     </div>
                     <div class="admin-form-actions">
-                        <button class="btn btn--primary">
+                        <button class="btn btn--primary" onclick="publishArticle()">
                             <i class="fas fa-plus"></i> Objavi vijest
                         </button>
-                        <button class="btn btn--ghost">
-                            Poništi
-                        </button>
+                        <button class="btn btn--ghost" onclick="resetNewsForm()">Poništi</button>
                     </div>
                 </div>
             </div>
 
         </div>
-
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/admin_news.js') }}"></script>
 {% endblock %}

@@ -6,15 +6,15 @@
 <div class="main-content">
     <div class="page-wrapper">
 
-        <!-- Page header -->
         <div class="page-header">
             <h1 class="page-header__title">Upravljanje Kolima</h1>
-            <p class="page-header__sub">Kreirajte i upravljajte kolima WWin Lige BiH</p>
+            <p class="page-header__sub">Postavite aktivno kolo i upravljajte deadlineima</p>
         </div>
+
+        <div id="admin-msg" class="alert" style="display:none;margin-bottom:16px;"></div>
 
         <div class="admin-split">
 
-            <!-- Gameweeks list -->
             <div class="admin-split__list">
                 <div class="admin-split__list-header">
                     <h2 class="admin-section__title">Sva kola</h2>
@@ -30,134 +30,88 @@
                             </tr>
                         </thead>
                         <tbody>
+                            {% for gw in gameweeks %}
                             <tr>
-                                <td><strong>Kolo 15</strong></td>
-                                <td class="text-muted">18. Apr 2026, 17:00</td>
-                                <td><span class="badge badge--success">Aktivno</span></td>
+                                <td><strong>{{ gw.name }}</strong></td>
+                                <td class="text-muted">
+                                    {{ gw.deadline.strftime('%d. %b %Y, %H:%M') if gw.deadline else '—' }}
+                                </td>
+                                <td>
+                                    {% if gw.is_active %}
+                                    <span class="badge badge--success">Aktivno</span>
+                                    {% elif gw.is_finished %}
+                                    <span class="badge badge--grey">Završeno</span>
+                                    {% else %}
+                                    <span class="badge badge--info">Predstojeće</span>
+                                    {% endif %}
+                                </td>
                                 <td>
                                     <div class="admin-table-actions">
-                                        <button class="btn btn--sm btn--outline">Uredi</button>
-                                        <button class="btn btn--sm btn--danger">Zatvori</button>
+                                        {% if not gw.is_active and not gw.is_finished %}
+                                        <button class="btn btn--sm btn--outline"
+                                                onclick="setActive({{ gw.id }}, {{ gw.number }})">
+                                            Aktiviraj
+                                        </button>
+                                        {% endif %}
+                                        {% if gw.is_active %}
+                                        <button class="btn btn--sm btn--danger"
+                                                onclick="finishGw({{ gw.id }}, {{ gw.number }})">
+                                            Zatvori
+                                        </button>
+                                        {% endif %}
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
-                                <td><strong>Kolo 14</strong></td>
-                                <td class="text-muted">11. Apr 2026, 17:00</td>
-                                <td><span class="badge badge--grey">Završeno</span></td>
-                                <td>
-                                    <div class="admin-table-actions">
-                                        <button class="btn btn--sm btn--outline">Uredi</button>
-                                        <button class="btn btn--sm btn--ghost" disabled>Zatvori</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>Kolo 13</strong></td>
-                                <td class="text-muted">4. Apr 2026, 17:00</td>
-                                <td><span class="badge badge--grey">Završeno</span></td>
-                                <td>
-                                    <div class="admin-table-actions">
-                                        <button class="btn btn--sm btn--outline">Uredi</button>
-                                        <button class="btn btn--sm btn--ghost" disabled>Zatvori</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>Kolo 12</strong></td>
-                                <td class="text-muted">28. Mar 2026, 17:00</td>
-                                <td><span class="badge badge--grey">Završeno</span></td>
-                                <td>
-                                    <div class="admin-table-actions">
-                                        <button class="btn btn--sm btn--outline">Uredi</button>
-                                        <button class="btn btn--sm btn--ghost" disabled>Zatvori</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>Kolo 16</strong></td>
-                                <td class="text-muted">25. Apr 2026, 17:00</td>
-                                <td><span class="badge badge--info">Predstojeće</span></td>
-                                <td>
-                                    <div class="admin-table-actions">
-                                        <button class="btn btn--sm btn--outline">Uredi</button>
-                                        <button class="btn btn--sm btn--ghost" disabled>Zatvori</button>
-                                    </div>
-                                </td>
-                            </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- Create/edit form -->
             <div class="admin-split__form">
-                <h2 class="admin-section__title">Novo kolo</h2>
-                <div class="card">
-                    <div class="form-group">
-                        <label class="form-group__label">Broj kola</label>
-                        <input type="number" class="form-control" placeholder="npr. 16" min="1" max="38">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-group__label">Naziv kola</label>
-                        <input type="text" class="form-control" placeholder="npr. Kolo 16">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-group__label">Datum i vrijeme deadlinea</label>
-                        <input type="datetime-local" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-group__label">Status</label>
-                        <select class="form-control">
-                            <option value="upcoming">Predstojeće</option>
-                            <option value="active">Aktivno</option>
-                            <option value="finished">Završeno</option>
-                        </select>
-                    </div>
-                    <div class="admin-form-actions">
-                        <button class="btn btn--primary">
-                            <i class="fas fa-plus"></i> Kreiraj kolo
-                        </button>
-                        <button class="btn btn--ghost">
-                            Poništi
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Active gameweek info -->
+                <!-- Active GW info -->
                 <div class="admin-gameweek-info">
                     <h3 class="admin-gameweek-info__title">Aktivno kolo</h3>
                     <div class="admin-gameweek-info__card">
+                        {% if active_gw %}
                         <div class="admin-gameweek-info__row">
                             <span class="text-muted">Kolo</span>
-                            <strong>Kolo 15</strong>
+                            <strong>{{ active_gw.name }}</strong>
                         </div>
                         <div class="admin-gameweek-info__row">
                             <span class="text-muted">Deadline</span>
-                            <strong>18. Apr 2026, 17:00</strong>
+                            <strong>{{ active_gw.deadline.strftime('%d. %b %Y, %H:%M') }}</strong>
                         </div>
                         <div class="admin-gameweek-info__row">
                             <span class="text-muted">Transferi</span>
+                            {% if active_gw.deadline > now %}
                             <span class="badge badge--success">Otvoreni</span>
+                            {% else %}
+                            <span class="badge badge--danger">Zatvoreni</span>
+                            {% endif %}
                         </div>
                         <div class="admin-gameweek-info__row">
-                            <span class="text-muted">Ukupno fantasy timova</span>
-                            <strong>156</strong>
+                            <span class="text-muted">Fantasy timova</span>
+                            <strong>{{ team_count }}</strong>
                         </div>
                         <div class="admin-gameweek-info__actions">
-                            <button class="btn btn--danger btn--sm">
-                                <i class="fas fa-lock"></i> Zatvori transfere
-                            </button>
-                            <button class="btn btn--outline btn--sm">
-                                <i class="fas fa-calculator"></i> Izračunaj poene
+                            <button class="btn btn--danger btn--sm"
+                                    onclick="finishGw({{ active_gw.id }}, {{ active_gw.number }})">
+                                <i class="fas fa-lock"></i> Zatvori kolo
                             </button>
                         </div>
+                        {% else %}
+                        <p class="text-muted">Nema aktivnog kola. Aktivirajte kolo iz liste.</p>
+                        {% endif %}
                     </div>
                 </div>
-
             </div>
-        </div>
 
+        </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/admin_gameweeks.js') }}"></script>
 {% endblock %}

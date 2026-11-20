@@ -6,190 +6,224 @@
 <div class="main-content">
     <div class="page-wrapper">
 
-        <!-- Page header -->
         <div class="page-header">
-            <h1 class="page-header__title">Kolo 15</h1>
-            <p class="page-header__sub">Pregled utakmica i rezultata trenutnog kola — WWin Liga BiH</p>
+            <h1 class="page-header__title">
+                {{ gameweek.name if gameweek else 'Kolo' }}
+                {% if gameweek and gameweek.is_active %}
+                <span class="badge badge--success" style="font-size:14px;vertical-align:middle;">Aktivno</span>
+                {% elif gameweek and gameweek.is_finished %}
+                <span class="badge badge--gold" style="font-size:14px;vertical-align:middle;">Završeno</span>
+                {% endif %}
+            </h1>
+            {% if gameweek %}
+            <p class="page-header__sub">
+                Deadline: {{ gameweek.deadline.strftime('%d. %b %Y, %H:%M') }}
+            </p>
+            {% endif %}
         </div>
 
-        <!-- Gameweek status bar -->
-        <div class="gameweek-status">
-            <div class="gameweek-status__item">
-                <span class="gameweek-status__label">Status</span>
-                <span class="badge badge--success">Aktivno</span>
-            </div>
-            <div class="gameweek-status__item">
-                <span class="gameweek-status__label">Deadline</span>
-                <span class="gameweek-status__value">18. Apr 2026, 17:00</span>
-            </div>
-            <div class="gameweek-status__item">
-                <span class="gameweek-status__label">Vaši poeni</span>
-                <span class="gameweek-status__value text-gold">52 pts</span>
-            </div>
-            <div class="gameweek-status__item">
-                <span class="gameweek-status__label">Prosječni poeni</span>
-                <span class="gameweek-status__value">44 pts</span>
-            </div>
-        </div>
-
-        <!-- Fixtures -->
-        <div class="gameweek-section">
-            <h2 class="gameweek-section__title">Utakmice</h2>
-
-            <div class="fixtures-list">
-
-                <!-- Fixture 1 -->
-                <div class="fixture-card fixture-card--finished">
-                    <div class="fixture-card__team fixture-card__team--home">
-                        <span class="fixture-card__team-name">FK Radnik</span>
-                        <span class="fixture-card__team-short">RAD</span>
-                    </div>
-                    <div class="fixture-card__score">
-                        <span class="fixture-card__score-value">0 — 3</span>
-                        <span class="fixture-card__score-status">Završeno</span>
-                    </div>
-                    <div class="fixture-card__team fixture-card__team--away">
-                        <span class="fixture-card__team-name">FK Željezničar</span>
-                        <span class="fixture-card__team-short">ŽEL</span>
-                    </div>
-                </div>
-
-                <!-- Fixture 2 -->
-                <div class="fixture-card fixture-card--finished">
-                    <div class="fixture-card__team fixture-card__team--home">
-                        <span class="fixture-card__team-name">FK Sarajevo</span>
-                        <span class="fixture-card__team-short">SAR</span>
-                    </div>
-                    <div class="fixture-card__score">
-                        <span class="fixture-card__score-value">2 — 1</span>
-                        <span class="fixture-card__score-status">Završeno</span>
-                    </div>
-                    <div class="fixture-card__team fixture-card__team--away">
-                        <span class="fixture-card__team-name">HŠK Zrinjski</span>
-                        <span class="fixture-card__team-short">ZRI</span>
-                    </div>
-                </div>
-
-                <!-- Fixture 3 -->
-                <div class="fixture-card fixture-card--upcoming">
-                    <div class="fixture-card__team fixture-card__team--home">
-                        <span class="fixture-card__team-name">FK Velež Mostar</span>
-                        <span class="fixture-card__team-short">VEL</span>
-                    </div>
-                    <div class="fixture-card__score">
-                        <span class="fixture-card__score-value">vs</span>
-                        <span class="fixture-card__score-status">18. Apr, 17:00</span>
-                    </div>
-                    <div class="fixture-card__team fixture-card__team--away">
-                        <span class="fixture-card__team-name">FK Sloga Doboj</span>
-                        <span class="fixture-card__team-short">SLO</span>
-                    </div>
-                </div>
-
-                <!-- Fixture 4 -->
-                <div class="fixture-card fixture-card--upcoming">
-                    <div class="fixture-card__team fixture-card__team--home">
-                        <span class="fixture-card__team-name">FK Rudar</span>
-                        <span class="fixture-card__team-short">RUD</span>
-                    </div>
-                    <div class="fixture-card__score">
-                        <span class="fixture-card__score-value">vs</span>
-                        <span class="fixture-card__score-status">19. Apr, 15:00</span>
-                    </div>
-                    <div class="fixture-card__team fixture-card__team--away">
-                        <span class="fixture-card__team-name">FK Borac</span>
-                        <span class="fixture-card__team-short">BOR</span>
-                    </div>
-                </div>
-
-                <!-- Fixture 5 -->
-                <div class="fixture-card fixture-card--upcoming">
-                    <div class="fixture-card__team fixture-card__team--home">
-                        <span class="fixture-card__team-name">HŠK Posušje</span>
-                        <span class="fixture-card__team-short">POS</span>
-                    </div>
-                    <div class="fixture-card__score">
-                        <span class="fixture-card__score-value">vs</span>
-                        <span class="fixture-card__score-status">19. Apr, 17:00</span>
-                    </div>
-                    <div class="fixture-card__team fixture-card__team--away">
-                        <span class="fixture-card__team-name">NK Široki Brijeg</span>
-                        <span class="fixture-card__team-short">ŠIR</span>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- Top performers -->
-        <div class="gameweek-section">
-            <h2 class="gameweek-section__title">Najbolji igrači kola</h2>
-
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Igrač</th>
-                            <th>Klub</th>
-                            <th>Pozicija</th>
-                            <th>Golovi</th>
-                            <th>Asistencije</th>
-                            <th>Minute</th>
-                            <th style="width: 80px;">Poeni</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Nemanja Bilbija</strong></td>
-                            <td>HŠK Zrinjski</td>
-                            <td><span class="badge badge--danger">NAP</span></td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>90</td>
-                            <td><span class="text-gold">7</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Adem Ljajić</strong></td>
-                            <td>FK Sarajevo</td>
-                            <td><span class="badge badge--info">VEZ</span></td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>90</td>
-                            <td><span class="text-gold">12</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Vedad Muftić</strong></td>
-                            <td>FK Željezničar</td>
-                            <td><span class="badge badge--success">GK</span></td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>90</td>
-                            <td><span class="text-gold">10</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Besim Šerbečić</strong></td>
-                            <td>FK Velež</td>
-                            <td><span class="badge badge--gold">ODB</span></td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>90</td>
-                            <td><span class="text-gold">9</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Navigation -->
+        <!-- Gameweek nav -->
         <div class="gameweek-nav">
-            <a href="#" class="btn btn--outline">
-                <i class="fas fa-chevron-left"></i> Kolo 14
+            {% if gameweek and gameweek.number > 1 %}
+            <a href="{{ url_for('fantasy.gameweek', id=gameweek.number - 1) }}"
+               class="btn btn--outline btn--sm">
+                <i class="fas fa-arrow-left"></i> Kolo {{ gameweek.number - 1 }}
             </a>
-            <a href="#" class="btn btn--outline">
-                Kolo 16 <i class="fas fa-chevron-right"></i>
+            {% else %}<span></span>{% endif %}
+
+            <span class="gameweek-nav__current">
+                {% if gameweek %}Kolo {{ gameweek.number }} / {{ total_gameweeks }}{% endif %}
+            </span>
+
+            {% if gameweek and gameweek.number < total_gameweeks %}
+            <a href="{{ url_for('fantasy.gameweek', id=gameweek.number + 1) }}"
+               class="btn btn--outline btn--sm">
+                Kolo {{ gameweek.number + 1 }} <i class="fas fa-arrow-right"></i>
             </a>
+            {% else %}<span></span>{% endif %}
         </div>
+
+        {% if gameweek %}
+        <div class="gameweek-layout">
+
+            <!-- Fixtures -->
+            <div class="gameweek-fixtures">
+                <h2 class="section-title">Utakmice</h2>
+                {% if fixtures %}
+                <div class="fixtures-list">
+                    {% for f in fixtures %}
+                    <div class="fixture-card {% if f.is_finished %}fixture-card--finished{% endif %}"
+                         onclick="openMatch({{ f.id }})" style="cursor:pointer;">
+                        <div class="fixture-card__team fixture-card__team--home">
+                            <span class="fixture-card__name">{{ f.home_team.name }}</span>
+                            <span class="fixture-card__short">{{ f.home_team.short_name }}</span>
+                        </div>
+                        <div class="fixture-card__score">
+                            {% if f.is_finished or f.home_score is not none %}
+                            <span class="fixture-card__result">
+                                {{ f.home_score }} : {{ f.away_score }}
+                            </span>
+                            {% else %}
+                            <span class="fixture-card__time">{{ f.match_date.strftime('%H:%M') }}</span>
+                            <span class="fixture-card__date">{{ f.match_date.strftime('%d. %b') }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="fixture-card__team fixture-card__team--away">
+                            <span class="fixture-card__short">{{ f.away_team.short_name }}</span>
+                            <span class="fixture-card__name">{{ f.away_team.name }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted">Nema utakmica za ovo kolo.</p>
+                {% endif %}
+            </div>
+
+            <!-- My team -->
+            {% if fantasy_team %}
+            <div class="gameweek-myteam">
+                <h2 class="section-title">Moj tim</h2>
+                <div class="gw-points-bar">
+                    <div class="gw-points-bar__item">
+                        <span class="gw-points-bar__value text-gold">{{ gameweek_points }}</span>
+                        <span class="gw-points-bar__label">Poeni kola</span>
+                    </div>
+                    <div class="gw-points-bar__item">
+                        <span class="gw-points-bar__value">{{ fantasy_team.total_points }}</span>
+                        <span class="gw-points-bar__label">Ukupno</span>
+                    </div>
+                </div>
+
+                <div class="gw-squad">
+                    <h3 class="gw-squad__title">Startna postava</h3>
+                    {% for p in starting %}
+                    <div class="gw-player-row">
+                        <div class="gw-player-row__pos">{{ p.position }}</div>
+                        <div class="gw-player-row__info">
+                            <span class="gw-player-row__name">
+                                {{ p.first_name }} {{ p.last_name }}
+                                {% if p.is_captain %}<span class="cap-badge">C</span>{% endif %}
+                                {% if p.is_vice_captain %}<span class="cap-badge cap-badge--v">V</span>{% endif %}
+                            </span>
+                            <span class="gw-player-row__club">{{ p.team_short }}</span>
+                        </div>
+                        <div class="gw-player-row__points text-gold">{{ p.total_points }} bod</div>
+                    </div>
+                    {% endfor %}
+
+                    <h3 class="gw-squad__title" style="margin-top:16px;">Klupa</h3>
+                    {% for p in bench %}
+                    <div class="gw-player-row gw-player-row--bench">
+                        <div class="gw-player-row__pos">{{ p.position }}</div>
+                        <div class="gw-player-row__info">
+                            <span class="gw-player-row__name">{{ p.first_name }} {{ p.last_name }}</span>
+                            <span class="gw-player-row__club">{{ p.team_short }}</span>
+                        </div>
+                        <div class="gw-player-row__points">{{ p.total_points }} bod</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+
+        <!-- GW History -->
+        {% if gw_history %}
+        <div class="card mt-24">
+            <h2 class="section-title">Historija kola</h2>
+            <div class="gw-history">
+                {% for h in gw_history %}
+                <a href="{{ url_for('fantasy.gameweek', id=h.gameweek_number) }}"
+                   class="gw-history-item {% if h.gameweek_number == gameweek.number %}gw-history-item--active{% endif %}">
+                    <span class="gw-history-item__number">{{ h.gameweek_number }}</span>
+                    <span class="gw-history-item__points text-gold">{{ h.points }}</span>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-calendar-week empty-state__icon"></i>
+            <h2 class="empty-state__title">Nema aktivnog kola</h2>
+            <p class="empty-state__sub">Pokrenite scraper da učitate raspored utakmica.</p>
+        </div>
+        {% endif %}
 
     </div>
 </div>
+
+<!-- Match detail modal -->
+<div class="match-modal-overlay" id="match-modal" style="display:none;" onclick="closeMatch(event)">
+    <div class="match-modal">
+        <button class="match-modal__close" onclick="closeMatchBtn()">
+            <i class="fas fa-times"></i>
+        </button>
+
+        <!-- Header -->
+        <div class="match-modal__header" id="modal-header">
+            <div class="match-modal__team">
+                <span class="match-modal__team-name" id="modal-home-name">—</span>
+            </div>
+            <div class="match-modal__score-wrap">
+                <div class="match-modal__score" id="modal-score">— : —</div>
+                <div class="match-modal__status" id="modal-status"></div>
+            </div>
+            <div class="match-modal__team match-modal__team--away">
+                <span class="match-modal__team-name" id="modal-away-name">—</span>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="match-modal__tabs">
+            <button class="match-modal__tab active" onclick="showTab('events')">
+                <i class="fas fa-futbol"></i> Događaji
+            </button>
+            <button class="match-modal__tab" onclick="showTab('lineups')">
+                <i class="fas fa-users"></i> Postave
+            </button>
+        </div>
+
+        <!-- Events tab -->
+        <div class="match-modal__content" id="tab-events">
+            <div id="modal-events-list">
+                <p class="text-muted" style="text-align:center;padding:24px;">
+                    Nema dostupnih događaja.
+                </p>
+            </div>
+        </div>
+
+        <!-- Lineups tab -->
+        <div class="match-modal__content" id="tab-lineups" style="display:none;padding:0;">
+            <div class="lineup-pitch-wrap">
+                <div class="lineup-pitch" id="lineup-pitch">
+                    <div class="lineup-pitch__label lineup-pitch__label--home" id="lineup-home-label">Domaćin</div>
+                    <div class="lineup-pitch__label lineup-pitch__label--away" id="lineup-away-label">Gost</div>
+                    <div class="lineup-pitch__center-line"></div>
+                    <div class="lineup-pitch__center-circle"></div>
+                </div>
+                <div class="lineup-subs" id="lineup-subs" style="display:none;">
+                    <h4 class="lineup-subs__title">Zamjene</h4>
+                    <div class="lineup-subs__cols">
+                        <div>
+                            <p class="lineup-subs__team" id="subs-home-title"></p>
+                            <div id="subs-home"></div>
+                        </div>
+                        <div>
+                            <p class="lineup-subs__team" id="subs-away-title"></p>
+                            <div id="subs-away"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/gameweek.js') }}"></script>
 {% endblock %}

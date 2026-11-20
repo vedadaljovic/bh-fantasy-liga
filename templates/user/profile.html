@@ -6,83 +6,104 @@
 <div class="main-content">
     <div class="page-wrapper">
 
-        <!-- Page header -->
         <div class="page-header">
             <h1 class="page-header__title">Moj Profil</h1>
             <p class="page-header__sub">Pregled vašeg profila i fantasy statistika</p>
         </div>
 
+        <div id="profile-msg" class="alert" style="display:none;margin-bottom:16px;"></div>
+
         <div class="profile-layout">
 
+            <!-- LEFT COLUMN -->
             <div class="profile-left">
 
                 <!-- Profile card -->
                 <div class="profile-card">
-                    <div class="profile-card__avatar">V</div>
-                    <h2 class="profile-card__username">vedad10</h2>
-                    <p class="profile-card__email">vedad@gmail.com</p>
-                    <p class="profile-card__joined text-muted">Član od: 13. Apr 2026</p>
+                    <div class="profile-card__avatar">{{ user.username[0]|upper }}</div>
+                    <h2 class="profile-card__username">{{ user.username }}</h2>
+                    <p class="profile-card__email">{{ user.email }}</p>
+                    <p class="profile-card__joined text-muted">
+                        Član od: {{ user.created_at.strftime('%d. %b %Y') if user.created_at else '—' }}
+                    </p>
                     <span class="badge badge--gold">Fantasy igrač</span>
                 </div>
 
-                <!-- Fantasy stats card -->
+                <!-- Fantasy stats -->
+                {% if fantasy_team %}
                 <div class="card mt-16">
                     <h3 class="profile-section__title">Fantasy statistike</h3>
                     <div class="profile-stats">
                         <div class="profile-stat">
-                            <span class="profile-stat__value text-gold">312</span>
+                            <span class="profile-stat__value text-gold">{{ fantasy_team.total_points }}</span>
                             <span class="profile-stat__label">Ukupno poena</span>
                         </div>
                         <div class="profile-stat">
-                            <span class="profile-stat__value">24</span>
+                            <span class="profile-stat__value">{{ rank or '—' }}</span>
                             <span class="profile-stat__label">Rang lista</span>
                         </div>
                         <div class="profile-stat">
-                            <span class="profile-stat__value">52</span>
+                            <span class="profile-stat__value">{{ fantasy_team.gameweek_points }}</span>
                             <span class="profile-stat__label">Poeni kola</span>
                         </div>
                         <div class="profile-stat">
-                            <span class="profile-stat__value">8</span>
-                            <span class="profile-stat__label">Transferi</span>
+                            <span class="profile-stat__value">{{ transfer_count }}</span>
+                            <span class="profile-stat__label">Transferi (kolo)</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Fantasy team info -->
+                <!-- Team info -->
                 <div class="card mt-16">
                     <h3 class="profile-section__title">Moj tim</h3>
                     <div class="profile-team">
                         <div class="profile-team__row">
                             <span class="text-muted">Naziv tima</span>
-                            <strong>Vedadovi Lavovi</strong>
+                            <strong>{{ fantasy_team.team_name }}</strong>
                         </div>
                         <div class="profile-team__row">
                             <span class="text-muted">Formacija</span>
-                            <strong>4-3-3</strong>
+                            <strong>{{ fantasy_team.formation or '—' }}</strong>
                         </div>
                         <div class="profile-team__row">
                             <span class="text-muted">Kapiten</span>
-                            <strong>Nemanja Bilbija</strong>
+                            <strong>
+                                {% if captain %}{{ captain.first_name }} {{ captain.last_name }}{% else %}—{% endif %}
+                            </strong>
                         </div>
                         <div class="profile-team__row">
                             <span class="text-muted">Potkapiten</span>
-                            <strong>Emir Hadžić</strong>
+                            <strong>
+                                {% if vice_captain %}{{ vice_captain.first_name }} {{ vice_captain.last_name }}{% else %}—{% endif %}
+                            </strong>
                         </div>
                         <div class="profile-team__row">
                             <span class="text-muted">Preostali budžet</span>
-                            <span class="text-gold">3.5m</span>
+                            <span class="text-gold">{{ '%.1f'|format(fantasy_team.budget_remaining) }}m</span>
                         </div>
                     </div>
-                    <a href="{{ url_for('fantasy.my_team') }}" class="btn btn--outline mt-16" style="width: 100%; justify-content: center;">
+                    <a href="{{ url_for('fantasy.my_team') }}" class="btn btn--outline mt-16"
+                       style="width:100%;justify-content:center;">
                         <i class="fas fa-shield-halved"></i> Pogledaj tim
                     </a>
                 </div>
+                {% else %}
+                <div class="card mt-16">
+                    <p class="text-muted" style="padding:8px 0;">Još niste kreirali fantasy tim.</p>
+                    <a href="{{ url_for('fantasy.pick_team') }}" class="btn btn--primary mt-16"
+                       style="width:100%;justify-content:center;">
+                        Kreiraj tim
+                    </a>
+                </div>
+                {% endif %}
 
             </div>
 
+            <!-- RIGHT COLUMN -->
             <div class="profile-right">
 
                 <!-- Gameweek history -->
+                {% if gw_history %}
                 <div class="card">
                     <h3 class="profile-section__title">Historija kola</h3>
                     <div class="table-wrapper">
@@ -91,90 +112,58 @@
                                 <tr>
                                     <th>Kolo</th>
                                     <th>Poeni</th>
-                                    <th>Rang</th>
-                                    <th>Transferi</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                {% for gw in gw_history|reverse %}
                                 <tr>
-                                    <td><strong>Kolo 15</strong> <span class="badge badge--success">Aktivno</span></td>
-                                    <td><span class="text-gold">52</span></td>
-                                    <td>24</td>
-                                    <td>1</td>
+                                    <td>
+                                        <strong>{{ gw.gameweek_name }}</strong>
+                                        {% if gw.is_active %}
+                                        <span class="badge badge--success">Aktivno</span>
+                                        {% endif %}
+                                    </td>
+                                    <td><span class="text-gold">{{ gw.points }}</span></td>
                                 </tr>
-                                <tr>
-                                    <td><strong>Kolo 14</strong></td>
-                                    <td><span class="text-gold">48</span></td>
-                                    <td>31</td>
-                                    <td>0</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Kolo 13</strong></td>
-                                    <td><span class="text-gold">61</span></td>
-                                    <td>18</td>
-                                    <td>2</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Kolo 12</strong></td>
-                                    <td><span class="text-gold">35</span></td>
-                                    <td>52</td>
-                                    <td>1</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Kolo 11</strong></td>
-                                    <td><span class="text-gold">44</span></td>
-                                    <td>38</td>
-                                    <td>0</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Kolo 10</strong></td>
-                                    <td><span class="text-gold">57</span></td>
-                                    <td>22</td>
-                                    <td>1</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Kolo 9</strong></td>
-                                    <td><span class="text-gold">39</span></td>
-                                    <td>44</td>
-                                    <td>0</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Kolo 8</strong></td>
-                                    <td><span class="text-gold">43</span></td>
-                                    <td>35</td>
-                                    <td>1</td>
-                                </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
                 </div>
+                {% endif %}
 
                 <!-- Settings -->
                 <div class="card mt-16">
                     <h3 class="profile-section__title">Postavke</h3>
 
-                    <!-- Change Team Name -->
+                    <!-- Team name -->
+                    {% if fantasy_team %}
                     <div class="profile-settings-group">
                         <label class="form-group__label">Naziv fantasy tima</label>
                         <div class="profile-settings-row">
-                            <input type="text" class="form-control" value="Vedadovi Lavovi">
-                            <button class="btn btn--outline">Spremi</button>
+                            <input type="text" id="team-name-input" class="form-control"
+                                   value="{{ fantasy_team.team_name }}" maxlength="50">
+                            <button class="btn btn--outline" onclick="saveTeamName()">Spremi</button>
                         </div>
                     </div>
+                    {% endif %}
 
                     <!-- Change password -->
                     <div class="profile-settings-group">
                         <label class="form-group__label">Promjena lozinke</label>
                         <div class="form-group">
-                            <input type="password" class="form-control" placeholder="Trenutna lozinka">
+                            <input type="password" id="current-password" class="form-control"
+                                   placeholder="Trenutna lozinka">
                         </div>
                         <div class="form-group">
-                            <input type="password" class="form-control" placeholder="Nova lozinka">
+                            <input type="password" id="new-password" class="form-control"
+                                   placeholder="Nova lozinka">
                         </div>
                         <div class="form-group">
-                            <input type="password" class="form-control" placeholder="Potvrdite novu lozinku">
+                            <input type="password" id="confirm-password" class="form-control"
+                                   placeholder="Potvrdite novu lozinku">
                         </div>
-                        <button class="btn btn--primary">
+                        <button class="btn btn--primary" onclick="changePassword()">
                             <i class="fas fa-lock"></i> Promijeni lozinku
                         </button>
                     </div>
@@ -182,8 +171,13 @@
                     <!-- Danger zone -->
                     <div class="profile-danger-zone">
                         <h4 class="profile-danger-zone__title">Opasna zona</h4>
-                        <p class="profile-danger-zone__desc">Brisanje naloga je trajno i ne može se poništiti. Svi vaši fantasy podaci će biti izgubljeni.</p>
-                        <button class="btn btn--danger btn--sm">
+                        <p class="profile-danger-zone__desc">
+                            Brisanje naloga je trajno i ne može se poništiti.
+                            Svi vaši fantasy podaci će biti izgubljeni.
+                        </p>
+                        <input type="password" id="delete-password" class="form-control"
+                               placeholder="Unesite lozinku za potvrdu" style="margin-bottom:10px;">
+                        <button class="btn btn--danger btn--sm" onclick="deleteAccount()">
                             <i class="fas fa-trash"></i> Obriši nalog
                         </button>
                     </div>
@@ -191,9 +185,11 @@
                 </div>
 
             </div>
-
         </div>
-
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/profile.js') }}"></script>
 {% endblock %}

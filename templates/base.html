@@ -6,6 +6,7 @@
     <title>{% block title %}BH Fantasy Liga{% endblock %}</title>
 
     <!-- Google fonts -->
+    <link rel="alternate" type="application/rss+xml" title="BH Fantasy Liga — Vijesti" href="{{ url_for('news.rss') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
@@ -15,6 +16,7 @@
 
     <!-- Base stylesheet -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/chips.css') }}">
 
     {% block extra_css %}{% endblock %}
 </head>

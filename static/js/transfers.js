@@ -1,101 +1,110 @@
-let selectedOut = null;
+let selectedOutId    = null;
+let selectedOutPos   = null;
+let selectedOutPrice = 0;
+let replSearch       = '';
 
-const myPlayers = {
-    gk: [
-        { id: 1, name: "Kenan Pirić", club: "ŽEL", price: "5.5m", points: 65 }
-    ],
-    def: [
-        { id: 2, name: "Adnan Kovačević", club: "SAR", price: "6.0m", points: 72 },
-        { id: 3, name: "Tarik Muharemović", club: "ZRI", price: "5.5m", points: 60 },
-        { id: 4, name: "Haris Bećirović", club: "VEL", price: "5.0m", points: 48 },
-        { id: 5, name: "Damir Šunjić", club: "BOA", price: "5.0m", points: 45 }
-    ],
-    mid: [
-        { id: 6, name: "Emir Hadžić", club: "ŽEL", price: "7.0m", points: 84 },
-        { id: 7, name: "Haris Handžić", club: "SAR", price: "6.5m", points: 71 },
-        { id: 8, name: "Bojan Pavlović", club: "RAD", price: "5.5m", points: 55 },
-        { id: 9, name: "Semir Štilić", club: "ŽEL", price: "6.0m", points: 62 },
-        { id: 10, name: "Amar Rahimić", club: "VEL", price: "5.5m", points: 50 }
-    ],
-    fwd: [
-        { id: 11, name: "Nemanja Bilbija", club: "BOA", price: "8.5m", points: 98 },
-        { id: 12, name: "Damir Kojašević", club: "VEL", price: "7.5m", points: 79 },
-        { id: 13, name: "Amer Dupovac", club: "RUD", price: "5.0m", points: 50 }
-    ]
-};
+document.getElementById('close-replacements').addEventListener('click', () => {
+    document.getElementById('replacements-panel').classList.remove('active');
+    document.querySelectorAll('.pitch-player, .bench-player').forEach(el => el.classList.remove('selected'));
+    selectedOutId = null;
+});
 
-const availablePlayers = [
-    { id: 101, name: "Ivan Lučić", club: "ŠIR", position: "GK", price: "5.0m", points: 58 },
-    { id: 102, name: "Stipe Vukelja", club: "ZRI", position: "GK", price: "5.0m", points: 52 },
-    { id: 103, name: "Đorđe Jovanović", club: "RAD", position: "DEF", price: "4.5m", points: 40 },
-    { id: 104, name: "Kenan Karić", club: "TUZ", position: "DEF", price: "4.5m", points: 38 },
-    { id: 105, name: "Anel Hebibović", club: "ŽEL", position: "MID", price: "6.0m", points: 66 },
-    { id: 106, name: "Jasmin Mešanović", club: "BOA", position: "MID", price: "5.5m", points: 59 },
-    { id: 107, name: "Elvedin Džinić", club: "SAR", position: "FWD", price: "6.5m", points: 70 },
-    { id: 108, name: "Dženis Beganović", club: "VEL", position: "FWD", price: "6.0m", points: 64 },
-];
+document.getElementById('replacement-search').addEventListener('input', e => {
+    replSearch = e.target.value.toLowerCase();
+    renderReplacements();
+});
 
-function selectPlayerOut(playerId, playerName, position) {
-    if (selectedOut && selectedOut.id === playerId) {
-        selectedOut = null;
-        document.querySelectorAll('.pitch-player').forEach(el => el.classList.remove('selected'));
-        hideReplacements();
+function selectOut(playerId, position, price) {
+    selectedOutId    = playerId;
+    selectedOutPos   = position;
+    selectedOutPrice = price;
+
+    document.querySelectorAll('.pitch-player, .bench-player').forEach(el => el.classList.remove('selected'));
+    const el = document.getElementById('tp-' + playerId);
+    if (el) el.classList.add('selected');
+
+    document.getElementById('replacements-title').textContent =
+        'Zamjena za ' + position;
+    document.getElementById('replacements-panel').classList.add('active');
+    renderReplacements();
+}
+
+function renderReplacements() {
+    const list   = document.getElementById('replacements-list');
+    const myIds  = new Set(MY_PLAYERS.map(p => p.player_id));
+    const budget = BUDGET_LEFT + selectedOutPrice;
+
+    const clubCount = {};
+    MY_PLAYERS.filter(p => p.player_id !== selectedOutId).forEach(p => {
+        clubCount[p.team_name] = (clubCount[p.team_name] || 0) + 1;
+    });
+
+    let players = ALL_PLAYERS.filter(p => {
+        if (myIds.has(p.player_id)) return false;
+        if (p.position !== selectedOutPos) return false;
+        if (replSearch && !`${p.first_name} ${p.last_name}`.toLowerCase().includes(replSearch)) return false;
+        return true;
+    }).sort((a, b) => b.total_points - a.total_points);
+
+    if (players.length === 0) {
+        list.innerHTML = '<p class="text-muted" style="padding:16px;">Nema dostupnih igrača.</p>';
         return;
     }
 
-    selectedOut = { id: playerId, name: playerName, position: position };
+    list.innerHTML = players.map(p => {
+        const tooExp   = p.price > budget;
+        const clubFull = (clubCount[p.team_name] || 0) >= 3 && p.team_name !== MY_PLAYERS.find(mp => mp.player_id === selectedOutId)?.team_name;
+        const disabled = tooExp || clubFull;
+        const priceDiff = p.price - selectedOutPrice;
+        const diffStr   = (priceDiff >= 0 ? '+' : '') + priceDiff.toFixed(1) + 'm';
+        const diffClass = priceDiff > 0 ? 'text-danger' : 'text-gold';
 
-    document.querySelectorAll('.pitch-player').forEach(el => el.classList.remove('selected'));
-    document.getElementById('player-' + playerId).classList.add('selected');
-
-    showReplacements(position);
-}
-
-function showReplacements(position) {
-    const panel = document.getElementById('replacements-panel');
-    const list = document.getElementById('replacements-list');
-    const title = document.getElementById('replacements-title');
-
-    const posMap = { gk: 'GK', def: 'DEF', mid: 'MID', fwd: 'FWD' };
-    const posLabel = posMap[position];
-
-    title.textContent = 'Dostupni ' + posLabel + ' igrači';
-
-    const filtered = availablePlayers.filter(p => p.position === posLabel);
-
-    list.innerHTML = filtered.map(p => `
-        <div class="replacement-card" onclick="confirmTransfer(${p.id}, '${p.name}')">
-            <div class="replacement-card__avatar">${p.name.split(' ').map(n => n[0]).join('').slice(0,2)}</div>
+        return `
+        <div class="replacement-card ${disabled ? 'replacement-card--disabled' : ''}"
+             ${disabled ? '' : `onclick="confirmTransfer(${p.player_id})"`}>
+            <div class="replacement-card__avatar">${(p.first_name[0] + p.last_name[0]).toUpperCase()}</div>
             <div class="replacement-card__info">
-                <p class="replacement-card__name">${p.name}</p>
-                <p class="replacement-card__club">${p.club} · ${p.position}</p>
+                <p class="replacement-card__name">${p.first_name} ${p.last_name}</p>
+                <p class="replacement-card__club">${p.team_short} · ${p.position}</p>
+                ${tooExp ? '<span class="sidebar-card__reason">Nedovoljno sredstava</span>' : ''}
+                ${clubFull ? '<span class="sidebar-card__reason">Maks. klub</span>' : ''}
             </div>
             <div class="replacement-card__stats">
-                <span class="replacement-card__price">${p.price}</span>
-                <span class="replacement-card__points text-gold">${p.points} pts</span>
+                <span class="replacement-card__price ${tooExp ? 'text-danger' : 'text-gold'}">${p.price.toFixed(1)}m</span>
+                <span class="replacement-card__pts ${diffClass}" style="font-size:11px;">${diffStr}</span>
+                <span class="replacement-card__pts">${p.total_points} bod</span>
             </div>
-        </div>
-    `).join('');
-
-    panel.classList.add('active');
+        </div>`;
+    }).join('');
 }
 
-function hideReplacements() {
-    document.getElementById('replacements-panel').classList.remove('active');
-}
+async function confirmTransfer(playerInId) {
+    if (!selectedOutId) return;
 
-function confirmTransfer(inId, inName) {
-    if (!selectedOut) return;
-    alert(`Transfer: ${selectedOut.name} → ${inName}`);
-    hideReplacements();
-    selectedOut = null;
-    document.querySelectorAll('.pitch-player').forEach(el => el.classList.remove('selected'));
-}
+    const errEl  = document.getElementById('transfer-error');
+    const succEl = document.getElementById('transfer-success');
+    errEl.style.display  = 'none';
+    succEl.style.display = 'none';
 
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('close-replacements').addEventListener('click', () => {
-        hideReplacements();
-        selectedOut = null;
-        document.querySelectorAll('.pitch-player').forEach(el => el.classList.remove('selected'));
-    });
-});
+    try {
+        const res  = await fetch('/fantasy/transfers', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ player_out_id: selectedOutId, player_in_id: playerInId }),
+        });
+        const data = await res.json();
+
+        if (data.success) {
+            succEl.textContent   = data.message;
+            succEl.style.display = 'block';
+            document.getElementById('replacements-panel').classList.remove('active');
+            setTimeout(() => window.location.reload(), 1200);
+        } else {
+            errEl.textContent   = data.message;
+            errEl.style.display = 'block';
+        }
+    } catch {
+        errEl.textContent   = 'Greška pri komunikaciji sa serverom.';
+        errEl.style.display = 'block';
+    }
+}

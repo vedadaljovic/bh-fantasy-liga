@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{# prettier-ignore #}
 
 {% block title %}Transferi — BH Fantasy Liga{% endblock %}
 
@@ -6,7 +7,6 @@
 <div class="main-content">
     <div class="page-wrapper">
 
-        <!-- Page header -->
         <div class="page-header">
             <h1 class="page-header__title">Transferi</h1>
             <p class="page-header__sub">Odaberite igrača kojeg želite zamijeniti, zatim odaberite zamjenu</p>
@@ -16,122 +16,120 @@
         <div class="transfer-bar">
             <div class="transfer-bar__item">
                 <span class="transfer-bar__label">Slobodni transferi</span>
-                <span class="transfer-bar__value text-gold">2</span>
+                <span class="transfer-bar__value text-gold">{{ free_transfers_left }}</span>
             </div>
             <div class="transfer-bar__item">
                 <span class="transfer-bar__label">Dodatni transferi</span>
-                <span class="transfer-bar__value">-2 pts svaki</span>
+                <span class="transfer-bar__value">−2 boda svaki</span>
             </div>
             <div class="transfer-bar__item">
                 <span class="transfer-bar__label">Budžet</span>
-                <span class="transfer-bar__value text-gold">3.5m</span>
+                <span class="transfer-bar__value text-gold">{{ '%.1f'|format(fantasy_team.budget_remaining) }}m</span>
             </div>
+            {% if active_gameweek %}
             <div class="transfer-bar__item">
                 <span class="transfer-bar__label">Deadline</span>
-                <span class="transfer-bar__value">18. Apr, 17:00</span>
+                <span class="transfer-bar__value">{{ active_gameweek.deadline.strftime('%d. %b, %H:%M') }}</span>
             </div>
+            {% endif %}
+            {% if penalty_points < 0 %}
+            <div class="transfer-bar__item">
+                <span class="transfer-bar__label">Kazna</span>
+                <span class="transfer-bar__value text-danger">{{ penalty_points }} bod</span>
+            </div>
+            {% endif %}
         </div>
+
+        <div id="transfer-error" class="alert alert--error" style="display:none;margin-bottom:12px;"></div>
+        <div id="transfer-success" class="alert alert--success" style="display:none;margin-bottom:12px;"></div>
 
         <div class="transfer-layout">
 
-            <!-- Pitch -->
+            <!-- Pitch: your current squad (starting only) -->
             <div class="transfer-pitch-wrap">
-                <div class="transfer-pitch">
+                <div class="transfer-pitch" id="transfer-pitch">
 
-                    <!-- GK row -->
+                    {% set starting = all_players | selectattr('is_starting') | list %}
+                    {% set bench_players = all_players | rejectattr('is_starting') | list %}
+
+                    <!-- GK -->
                     <div class="pitch-row">
-                        <div class="pitch-player" id="player-1" onclick="selectPlayerOut(1, 'Kenan Pirić', 'gk')">
-                            <div class="pitch-player__avatar">KP</div>
-                            <p class="pitch-player__name">Pirić</p>
-                            <p class="pitch-player__club">ŽEL</p>
-                            <p class="pitch-player__price">5.5m</p>
+                        {% for p in starting if p.position == 'GK' %}
+                        <div class="pitch-player" id="tp-{{ p.player_id }}"
+                             onclick="selectOut({{ p.player_id }}, '{{ p.position }}', {{ p.price }})">
+                            <div class="pitch-player__avatar">{{ p.last_name[:2] }}</div>
+                            <p class="pitch-player__name">{{ p.last_name }}</p>
+                            <p class="pitch-player__club">{{ p.team_short }}</p>
+                            <p class="pitch-player__price">{{ '%.1f'|format(p.price) }}m</p>
+                            {% if p.is_captain %}<span class="pitch-player__badge">C</span>{% endif %}
+                            {% if p.is_vice_captain %}<span class="pitch-player__badge pitch-player__badge--v">V</span>{% endif %}
                         </div>
+                        {% endfor %}
                     </div>
 
-                    <!-- DEF row -->
+                    <!-- DEF -->
                     <div class="pitch-row">
-                        <div class="pitch-player" id="player-2" onclick="selectPlayerOut(2, 'Adnan Kovačević', 'def')">
-                            <div class="pitch-player__avatar">AK</div>
-                            <p class="pitch-player__name">Kovačević</p>
-                            <p class="pitch-player__club">SAR</p>
-                            <p class="pitch-player__price">6.0m</p>
+                        {% for p in starting if p.position == 'DEF' %}
+                        <div class="pitch-player" id="tp-{{ p.player_id }}"
+                             onclick="selectOut({{ p.player_id }}, '{{ p.position }}', {{ p.price }})">
+                            <div class="pitch-player__avatar">{{ p.last_name[:2] }}</div>
+                            <p class="pitch-player__name">{{ p.last_name }}</p>
+                            <p class="pitch-player__club">{{ p.team_short }}</p>
+                            <p class="pitch-player__price">{{ '%.1f'|format(p.price) }}m</p>
+                            {% if p.is_captain %}<span class="pitch-player__badge">C</span>{% endif %}
+                            {% if p.is_vice_captain %}<span class="pitch-player__badge pitch-player__badge--v">V</span>{% endif %}
                         </div>
-                        <div class="pitch-player" id="player-3" onclick="selectPlayerOut(3, 'Tarik Muharemović', 'def')">
-                            <div class="pitch-player__avatar">TM</div>
-                            <p class="pitch-player__name">Muharemović</p>
-                            <p class="pitch-player__club">ZRI</p>
-                            <p class="pitch-player__price">5.5m</p>
-                        </div>
-                        <div class="pitch-player" id="player-4" onclick="selectPlayerOut(4, 'Haris Bećirović', 'def')">
-                            <div class="pitch-player__avatar">HB</div>
-                            <p class="pitch-player__name">Bećirović</p>
-                            <p class="pitch-player__club">VEL</p>
-                            <p class="pitch-player__price">5.0m</p>
-                        </div>
-                        <div class="pitch-player" id="player-5" onclick="selectPlayerOut(5, 'Damir Šunjić', 'def')">
-                            <div class="pitch-player__avatar">DŠ</div>
-                            <p class="pitch-player__name">Šunjić</p>
-                            <p class="pitch-player__club">BOA</p>
-                            <p class="pitch-player__price">5.0m</p>
-                        </div>
+                        {% endfor %}
                     </div>
 
-                    <!-- MID row -->
+                    <!-- MID -->
                     <div class="pitch-row">
-                        <div class="pitch-player" id="player-6" onclick="selectPlayerOut(6, 'Emir Hadžić', 'mid')">
-                            <div class="pitch-player__avatar">EH</div>
-                            <p class="pitch-player__name">Hadžić</p>
-                            <p class="pitch-player__club">ŽEL</p>
-                            <p class="pitch-player__price">7.0m</p>
+                        {% for p in starting if p.position == 'MID' %}
+                        <div class="pitch-player" id="tp-{{ p.player_id }}"
+                             onclick="selectOut({{ p.player_id }}, '{{ p.position }}', {{ p.price }})">
+                            <div class="pitch-player__avatar">{{ p.last_name[:2] }}</div>
+                            <p class="pitch-player__name">{{ p.last_name }}</p>
+                            <p class="pitch-player__club">{{ p.team_short }}</p>
+                            <p class="pitch-player__price">{{ '%.1f'|format(p.price) }}m</p>
+                            {% if p.is_captain %}<span class="pitch-player__badge">C</span>{% endif %}
+                            {% if p.is_vice_captain %}<span class="pitch-player__badge pitch-player__badge--v">V</span>{% endif %}
                         </div>
-                        <div class="pitch-player" id="player-7" onclick="selectPlayerOut(7, 'Haris Handžić', 'mid')">
-                            <div class="pitch-player__avatar">HH</div>
-                            <p class="pitch-player__name">Handžić</p>
-                            <p class="pitch-player__club">SAR</p>
-                            <p class="pitch-player__price">6.5m</p>
-                        </div>
-                        <div class="pitch-player" id="player-8" onclick="selectPlayerOut(8, 'Bojan Pavlović', 'mid')">
-                            <div class="pitch-player__avatar">BP</div>
-                            <p class="pitch-player__name">Pavlović</p>
-                            <p class="pitch-player__club">RAD</p>
-                            <p class="pitch-player__price">5.5m</p>
-                        </div>
-                        <div class="pitch-player" id="player-9" onclick="selectPlayerOut(9, 'Semir Štilić', 'mid')">
-                            <div class="pitch-player__avatar">SŠ</div>
-                            <p class="pitch-player__name">Štilić</p>
-                            <p class="pitch-player__club">ŽEL</p>
-                            <p class="pitch-player__price">6.0m</p>
-                        </div>
-                        <div class="pitch-player" id="player-10" onclick="selectPlayerOut(10, 'Amar Rahimić', 'mid')">
-                            <div class="pitch-player__avatar">AR</div>
-                            <p class="pitch-player__name">Rahimić</p>
-                            <p class="pitch-player__club">VEL</p>
-                            <p class="pitch-player__price">5.5m</p>
-                        </div>
+                        {% endfor %}
                     </div>
 
-                    <!-- FWD row -->
+                    <!-- FWD -->
                     <div class="pitch-row">
-                        <div class="pitch-player" id="player-11" onclick="selectPlayerOut(11, 'Nemanja Bilbija', 'fwd')">
-                            <div class="pitch-player__avatar">NB</div>
-                            <p class="pitch-player__name">Bilbija</p>
-                            <p class="pitch-player__club">BOA</p>
-                            <p class="pitch-player__price">8.5m</p>
+                        {% for p in starting if p.position == 'FWD' %}
+                        <div class="pitch-player" id="tp-{{ p.player_id }}"
+                             onclick="selectOut({{ p.player_id }}, '{{ p.position }}', {{ p.price }})">
+                            <div class="pitch-player__avatar">{{ p.last_name[:2] }}</div>
+                            <p class="pitch-player__name">{{ p.last_name }}</p>
+                            <p class="pitch-player__club">{{ p.team_short }}</p>
+                            <p class="pitch-player__price">{{ '%.1f'|format(p.price) }}m</p>
+                            {% if p.is_captain %}<span class="pitch-player__badge">C</span>{% endif %}
+                            {% if p.is_vice_captain %}<span class="pitch-player__badge pitch-player__badge--v">V</span>{% endif %}
                         </div>
-                        <div class="pitch-player" id="player-12" onclick="selectPlayerOut(12, 'Damir Kojašević', 'fwd')">
-                            <div class="pitch-player__avatar">DK</div>
-                            <p class="pitch-player__name">Kojašević</p>
-                            <p class="pitch-player__club">VEL</p>
-                            <p class="pitch-player__price">7.5m</p>
-                        </div>
-                        <div class="pitch-player" id="player-13" onclick="selectPlayerOut(13, 'Amer Dupovac', 'fwd')">
-                            <div class="pitch-player__avatar">AD</div>
-                            <p class="pitch-player__name">Dupovac</p>
-                            <p class="pitch-player__club">RUD</p>
-                            <p class="pitch-player__price">5.0m</p>
-                        </div>
+                        {% endfor %}
                     </div>
 
+                </div>
+
+                <!-- Bench strip -->
+                <div class="team-bench" style="margin-top:16px;">
+                    <h3 class="team-bench__title">Klupa</h3>
+                    <div class="bench-players">
+                        {% for p in bench_players %}
+                        <div class="bench-player bench-player--clickable" id="tp-{{ p.player_id }}"
+                             onclick="selectOut({{ p.player_id }}, '{{ p.position }}', {{ p.price }})">
+                            <div class="bench-player__avatar">{{ p.position }}</div>
+                            <div class="bench-player__info">
+                                <p class="bench-player__name">{{ p.first_name }} {{ p.last_name }}</p>
+                                <p class="bench-player__position">{{ p.team_short }}</p>
+                            </div>
+                            <p class="bench-player__points">{{ '%.1f'|format(p.price) }}m</p>
+                        </div>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
 
@@ -143,8 +141,14 @@
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
+                <div style="padding: 8px 12px;">
+                    <input type="text" id="replacement-search" class="form-input"
+                           placeholder="Pretraži..." autocomplete="off">
+                </div>
                 <div class="replacements-list" id="replacements-list">
-                    <p class="text-muted" style="padding: 16px;">Kliknite na igrača u timu da vidite zamjene.</p>
+                    <p class="text-muted" style="padding:16px;">
+                        Kliknite na igrača u timu da vidite zamjene.
+                    </p>
                 </div>
             </div>
 
@@ -155,5 +159,10 @@
 {% endblock %}
 
 {% block extra_js %}
+<script>
+    const MY_PLAYERS  = {{ all_players | tojson }};
+    const ALL_PLAYERS = {{ available_players | tojson }};
+    const BUDGET_LEFT = {{ fantasy_team.budget_remaining | float }};
+</script>
 <script src="{{ url_for('static', filename='js/transfers.js') }}"></script>
 {% endblock %}

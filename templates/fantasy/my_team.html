@@ -3,273 +3,273 @@
 {% block title %}Moj Tim — BH Fantasy Liga{% endblock %}
 
 {% block content %}
-
 <div class="main-content">
     <div class="page-wrapper">
 
-        <!-- Page header -->
         <div class="page-header">
             <h1 class="page-header__title">Moj Fantasy Tim</h1>
-            <p class="page-header__sub">Kolo 15 je aktivno. Deadline za transfere: 7. Apr, 19:00</p>
+            {% if active_gameweek %}
+            <p class="page-header__sub">
+                {{ active_gameweek.name }} je aktivno.
+                Deadline: {{ active_gameweek.deadline.strftime('%d. %b, %H:%M') }}
+            </p>
+            {% else %}
+            <p class="page-header__sub">Trenutno nema aktivnog kola.</p>
+            {% endif %}
         </div>
 
-        <!-- Team stats bar -->
+        <div id="chip-msg" class="alert" style="display:none;margin-bottom:16px;"></div>
+
+        <!-- Stats bar -->
         <div class="team-stats-bar">
             <div class="team-stat">
-                <p class="team-stat__label">Timska Vrijednost</p>
-                <p class="team-stat__value">104.5m KM</p>
-            </div>
-            <div class="team-stat">
-                <p class="team-stat__label">Novac u Banci</p>
-                <p class="team-stat__value text-gold">2.1m KM</p>
+                <p class="team-stat__label">Budžet</p>
+                <p class="team-stat__value text-gold">{{ '%.1f'|format(fantasy_team.budget_remaining) }}m KM</p>
             </div>
             <div class="team-stat">
                 <p class="team-stat__label">Kolo (Poeni)</p>
-                <p class="team-stat__value">+68</p>
+                <p class="team-stat__value">+{{ gameweek_points }}</p>
             </div>
             <div class="team-stat">
                 <p class="team-stat__label">Ukupni Poeni</p>
-                <p class="team-stat__value text-gold">3,850</p>
+                <p class="team-stat__value text-gold">{{ fantasy_team.total_points }}</p>
             </div>
             <div class="team-stat">
-                <p class="team-stat__label">Rang</p>
-                <p class="team-stat__value">4. mjesto</p>
+                <p class="team-stat__label">Tim</p>
+                <p class="team-stat__value">{{ fantasy_team.team_name }}</p>
             </div>
         </div>
 
-        <!-- Team actions -->
+        <!-- Actions -->
         <div class="team-actions">
             <a href="{{ url_for('fantasy.transfers') }}" class="btn btn--primary">
                 <i class="fas fa-right-left"></i> Transferi
             </a>
-            <a href="#" class="btn btn--outline">
-                <i class="fas fa-pen"></i> Promijeni Tim
-            </a>
-            <a href="#" class="btn btn--outline">
-                <i class="fas fa-redo"></i> Vrati Proslost
-            </a>
         </div>
 
-        <!-- Team formation -->
+        <!-- Chips -->
+        {% if active_gameweek %}
+        <div class="card mt-16">
+            <div class="bhfl-chips-header">
+                <h3 class="profile-section__title">Čipovi</h3>
+                <button class="bhfl-chip-info-btn" onclick="openChipGuide()">
+                    <i class="fas fa-circle-info"></i> Saznaj više
+                </button>
+            </div>
+            <div class="bhfl-chips-grid">
+
+                <!-- Triple Captain -->
+                <div class="bhfl-chip-card {% if chip_used == 'triple_captain' %}bhfl-chip-card--active{% elif triple_captain_used %}bhfl-chip-card--used{% elif chip_used %}bhfl-chip-card--blocked{% endif %}">
+                    <span class="bhfl-chip-emoji">👑</span>
+                    <p class="bhfl-chip-name">3x Kapiten</p>
+                    {% if triple_captain_used and chip_used != 'triple_captain' %}
+                        <span class="badge badge--grey">Iskorišten</span>
+                    {% elif chip_used == 'triple_captain' %}
+                        <button class="btn btn--sm btn--danger" onclick="deactivateChip()">Poništi</button>
+                    {% elif chip_used %}
+                        <span class="badge badge--grey">Nedostupno</span>
+                    {% else %}
+                        <button class="btn btn--sm btn--outline" onclick="activateChip('triple_captain')">Aktiviraj</button>
+                    {% endif %}
+                </div>
+
+                <!-- Bench Boost -->
+                <div class="bhfl-chip-card {% if chip_used == 'bench_boost' %}bhfl-chip-card--active{% elif bench_boost_used %}bhfl-chip-card--used{% elif chip_used %}bhfl-chip-card--blocked{% endif %}">
+                    <span class="bhfl-chip-emoji">👥</span>
+                    <p class="bhfl-chip-name">Klupa boost</p>
+                    {% if bench_boost_used and chip_used != 'bench_boost' %}
+                        <span class="badge badge--grey">Iskorišten</span>
+                    {% elif chip_used == 'bench_boost' %}
+                        <button class="btn btn--sm btn--danger" onclick="deactivateChip()">Poništi</button>
+                    {% elif chip_used %}
+                        <span class="badge badge--grey">Nedostupno</span>
+                    {% else %}
+                        <button class="btn btn--sm btn--outline" onclick="activateChip('bench_boost')">Aktiviraj</button>
+                    {% endif %}
+                </div>
+
+                <!-- Džoker -->
+                <div class="bhfl-chip-card {% if chip_used == 'wildcard' %}bhfl-chip-card--active{% elif wildcard_used %}bhfl-chip-card--used{% elif chip_used %}bhfl-chip-card--blocked{% endif %}">
+                    <span class="bhfl-chip-emoji">🪄</span>
+                    <p class="bhfl-chip-name">Džoker</p>
+                    {% if wildcard_used and chip_used != 'wildcard' %}
+                        <span class="badge badge--grey">Iskorišten</span>
+                    {% elif chip_used == 'wildcard' %}
+                        <button class="btn btn--sm btn--danger" onclick="deactivateChip()">Poništi</button>
+                    {% elif chip_used %}
+                        <span class="badge badge--grey">Nedostupno</span>
+                    {% else %}
+                        <button class="btn btn--sm btn--outline" onclick="activateChip('wildcard')">Aktiviraj</button>
+                    {% endif %}
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Chip guide modal -->
+        <div class="match-modal-overlay" id="chip-guide-modal" style="display:none;" onclick="closeChipGuide(event)">
+            <div class="match-modal" style="max-width:480px;">
+                <button class="match-modal__close" onclick="closeChipGuide()">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="match-modal__header" style="justify-content:center;padding:24px 24px 12px;">
+                    <h3 style="color:var(--white);font-size:18px;margin:0;">O čipovima</h3>
+                </div>
+                <div class="match-modal__content" style="padding:8px 24px 24px;display:flex;flex-direction:column;gap:16px;">
+                    <div class="bhfl-chip-guide-item">
+                        <p class="bhfl-chip-guide-item__title"><i class="fas fa-crown"></i> Trostruki kapiten</p>
+                        <p class="bhfl-chip-guide-item__desc">Vaš kapiten donosi 3× poene umjesto 2× za ovo kolo. Ako kapiten nije igrao, potkapiten dobija 3× poene.</p>
+                    </div>
+                    <div class="bhfl-chip-guide-item">
+                        <p class="bhfl-chip-guide-item__title"><i class="fas fa-users"></i> Klupa boost</p>
+                        <p class="bhfl-chip-guide-item__desc">Svih 15 igrača skuplja poene ovo kolo — i startna postava i klupa. Idealno za kola s puno utakmica.</p>
+                    </div>
+                    <div class="bhfl-chip-guide-item">
+                        <p class="bhfl-chip-guide-item__title"><i class="fas fa-wand-magic-sparkles"></i> Džoker</p>
+                        <p class="bhfl-chip-guide-item__desc">Neograničeni slobodni transferi bez kaznenih bodova ovo kolo. Savršeno za potpunu reorganizaciju tima.</p>
+                    </div>
+                    <p style="color:var(--grey-400);font-size:12px;margin:0;">Svaki čip može se koristiti samo jednom u sezoni i može se poništiti prije zatvaranja kola.</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Formation + pitch -->
         <div class="team-formation">
             <div class="team-formation__header">
-                <h2 class="team-formation__title">Formacija: <span id="current-formation">4-3-3</span></h2>
-                <button class="btn btn--outline btn--sm" id="formation-toggle">
-                    <i class="fas fa-edit"></i> Promijeni
-                </button>
+                <h2 class="team-formation__title">
+                    Formacija: <span id="current-formation">{{ formation }}</span>
+                </h2>
             </div>
 
-            <!-- Formation selector -->
-            <div class="formation-selector" id="formation-selector">
-                <p class="formation-selector__label">Izaberite novu formaciju:</p>
-                <div class="formation-options">
-                    <button class="formation-option active" data-formation="4-3-3">
-                        <span class="formation-option__name">4-3-3</span>
-                        <span class="formation-option__desc">4 Bran. 3 Vez. 3 Nap.</span>
-                    </button>
-                    <button class="formation-option" data-formation="4-4-2">
-                        <span class="formation-option__name">4-4-2</span>
-                        <span class="formation-option__desc">4 Bran. 4 Vez. 2 Nap.</span>
-                    </button>
-                    <button class="formation-option" data-formation="3-5-2">
-                        <span class="formation-option__name">3-5-2</span>
-                        <span class="formation-option__desc">3 Bran. 5 Vez. 2 Nap.</span>
-                    </button>
-                    <button class="formation-option" data-formation="5-3-2">
-                        <span class="formation-option__name">5-3-2</span>
-                        <span class="formation-option__desc">5 Bran. 3 Vez. 2 Nap.</span>
-                    </button>
-                    <button class="formation-option" data-formation="3-4-3">
-                        <span class="formation-option__name">3-4-3</span>
-                        <span class="formation-option__desc">3 Bran. 4 Vez. 3 Nap.</span>
-                    </button>
-                </div>
-                <button class="btn btn--primary btn--sm formation-selector__close" id="formation-close">
-                    Zatvori
-                </button>
-            </div>
-            
-            <!-- Formation display -->
-            <div class="formation-display">
-                
-                <!-- Goalkeeper Row -->
+            <!-- Pitch: starting XI only -->
+            <div class="formation-display" id="formation-display">
+
+                <!-- GK -->
                 <div class="formation-row formation-row--gk">
+                    {% for p in starting if p.position == 'GK' %}
                     <div class="player-slot player-slot--gk">
                         <div class="player-slot__content">
                             <div class="player-slot__avatar">GK</div>
-                            <p class="player-slot__name">Nikola Vasilj</p>
+                            <p class="player-slot__name">{{ p.last_name }}</p>
                             <p class="player-slot__position">Golman</p>
-                            <p class="player-slot__points">
-                                <span class="player-slot__captain-badge">
-                                    <i class="fas fa-shield-halved"></i>
-                                </span>
-                                +8 poena
-                            </p>
+                            <p class="player-slot__club">{{ p.team_short }}</p>
+                            {% if p.is_captain %}
+                            <span class="player-slot__captain-badge"><i class="fas fa-crown"></i></span>
+                            {% elif p.is_vice_captain %}
+                            <span class="player-slot__vice-captain-badge"><i class="fas fa-star"></i></span>
+                            {% endif %}
                         </div>
                     </div>
+                    {% endfor %}
                 </div>
 
-                <!-- Defenders row -->
+                <!-- DEF -->
                 <div class="formation-row formation-row--defenders">
+                    {% for p in starting if p.position == 'DEF' %}
                     <div class="player-slot">
                         <div class="player-slot__content">
                             <div class="player-slot__avatar">DF</div>
-                            <p class="player-slot__name">Sead Kolašinac</p>
-                            <p class="player-slot__position">Branič</p>
-                            <p class="player-slot__points">+7 poena</p>
+                            <p class="player-slot__name">{{ p.last_name }}</p>
+                            <p class="player-slot__position">ODBRANA</p>
+                            <p class="player-slot__club">{{ p.team_short }}</p>
+                            {% if p.is_captain %}
+                            <span class="player-slot__captain-badge"><i class="fas fa-crown"></i></span>
+                            {% elif p.is_vice_captain %}
+                            <span class="player-slot__vice-captain-badge"><i class="fas fa-star"></i></span>
+                            {% endif %}
                         </div>
                     </div>
-                    <div class="player-slot">
-                        <div class="player-slot__content">
-                            <div class="player-slot__avatar">DF</div>
-                            <p class="player-slot__name">Tarik Muharemović</p>
-                            <p class="player-slot__position">Branič</p>
-                            <p class="player-slot__points">+5 poena</p>
-                        </div>
-                    </div>
-                    <div class="player-slot">
-                        <div class="player-slot__content">
-                            <div class="player-slot__avatar">DF</div>
-                            <p class="player-slot__name">Stefan Ristovski</p>
-                            <p class="player-slot__position">Branič</p>
-                            <p class="player-slot__points">
-                                <span class="player-slot__vice-captain-badge">
-                                    <i class="fas fa-star"></i>
-                                </span>
-                                +12 poena
-                            </p>
-                        </div>
-                    </div>
-                    <div class="player-slot">
-                        <div class="player-slot__content">
-                            <div class="player-slot__avatar">DF</div>
-                            <p class="player-slot__name">Amar Dedić</p>
-                            <p class="player-slot__position">Branič</p>
-                            <p class="player-slot__points">+6 poena</p>
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
 
-                <!-- Midfielders row -->
+                <!-- MID -->
                 <div class="formation-row formation-row--midfielders">
+                    {% for p in starting if p.position == 'MID' %}
                     <div class="player-slot">
                         <div class="player-slot__content">
                             <div class="player-slot__avatar">MF</div>
-                            <p class="player-slot__name">Amar Rahmanović</p>
-                            <p class="player-slot__position">Veznjak</p>
-                            <p class="player-slot__points">+15 poena</p>
+                            <p class="player-slot__name">{{ p.last_name }}</p>
+                            <p class="player-slot__position">VEZNI RED</p>
+                            <p class="player-slot__club">{{ p.team_short }}</p>
+                            {% if p.is_captain %}
+                            <span class="player-slot__captain-badge"><i class="fas fa-crown"></i></span>
+                            {% elif p.is_vice_captain %}
+                            <span class="player-slot__vice-captain-badge"><i class="fas fa-star"></i></span>
+                            {% endif %}
                         </div>
                     </div>
-                    <div class="player-slot">
-                        <div class="player-slot__content">
-                            <div class="player-slot__avatar">MF</div>
-                            <p class="player-slot__name">Zajko Zeba</p>
-                            <p class="player-slot__position">Veznjak</p>
-                            <p class="player-slot__points">+9 poena</p>
-                        </div>
-                    </div>
-                    <div class="player-slot">
-                        <div class="player-slot__content">
-                            <div class="player-slot__avatar">MF</div>
-                            <p class="player-slot__name">Gojko Cimirot</p>
-                            <p class="player-slot__position">Veznjak</p>
-                            <p class="player-slot__points">+11 poena</p>
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
 
-                <!-- Forwards row -->
+                <!-- FWD -->
                 <div class="formation-row formation-row--forwards">
+                    {% for p in starting if p.position == 'FWD' %}
                     <div class="player-slot">
                         <div class="player-slot__content">
                             <div class="player-slot__avatar">FW</div>
-                            <p class="player-slot__name">Benjamin Tatar</p>
-                            <p class="player-slot__position">Napadač</p>
-                            <p class="player-slot__points">
-                                <span class="player-slot__captain-badge">
-                                    <i class="fas fa-crown"></i>
-                                </span>
-                                +35 poena
-                            </p>
+                            <p class="player-slot__name">{{ p.last_name }}</p>
+                            <p class="player-slot__position">NAPAD</p>
+                            <p class="player-slot__club">{{ p.team_short }}</p>
+                            {% if p.is_captain %}
+                            <span class="player-slot__captain-badge"><i class="fas fa-crown"></i></span>
+                            {% elif p.is_vice_captain %}
+                            <span class="player-slot__vice-captain-badge"><i class="fas fa-star"></i></span>
+                            {% endif %}
                         </div>
                     </div>
-                    <div class="player-slot">
-                        <div class="player-slot__content">
-                            <div class="player-slot__avatar">FW</div>
-                            <p class="player-slot__name">Alen Škoro</p>
-                            <p class="player-slot__position">Napadač</p>
-                            <p class="player-slot__points">+14 poena</p>
-                        </div>
-                    </div>
-                    <div class="player-slot">
-                        <div class="player-slot__content">
-                            <div class="player-slot__avatar">FW</div>
-                            <p class="player-slot__name">Kerim Alajbegović</p>
-                            <p class="player-slot__position">Napadač</p>
-                            <p class="player-slot__points">+8 poena</p>
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
 
             </div>
         </div>
 
-        <!-- Bench section -->
+        <!-- Bench -->
         <div class="team-bench">
             <h3 class="team-bench__title">Klupa</h3>
             <div class="bench-players">
+                {% for p in bench %}
                 <div class="bench-player">
-                    <div class="bench-player__avatar">GK</div>
+                    <div class="bench-player__avatar">{{ p.position }}</div>
                     <div class="bench-player__info">
-                        <p class="bench-player__name">Kenan Hasagić</p>
-                        <p class="bench-player__position">Golman</p>
+                        <p class="bench-player__name">{{ p.first_name }} {{ p.last_name }}</p>
+                        <p class="bench-player__position">{{ p.team_short }} · {{ p.position }}</p>
                     </div>
-                    <p class="bench-player__points">+0 poena</p>
+                    <p class="bench-player__points">{{ p.total_points }} bod</p>
                 </div>
-                <div class="bench-player">
-                    <div class="bench-player__avatar">DF</div>
-                    <div class="bench-player__info">
-                        <p class="bench-player__name">Emir Spahić</p>
-                        <p class="bench-player__position">Branič</p>
-                    </div>
-                    <p class="bench-player__points">+0 poena</p>
-                </div>
-                <div class="bench-player">
-                    <div class="bench-player__avatar">MF</div>
-                    <div class="bench-player__info">
-                        <p class="bench-player__name">Miralem Pjanić</p>
-                        <p class="bench-player__position">Veznjak</p>
-                    </div>
-                    <p class="bench-player__points">+0 poena</p>
-                </div>
+                {% endfor %}
             </div>
         </div>
 
-        <!-- Captain and vice captain info -->
+        <!-- Captain info -->
+        {% if captain or vice_captain %}
         <div class="captain-info">
+            {% if captain %}
             <div class="captain-info__card">
-                <div class="captain-info__badge">
-                    <i class="fas fa-crown"></i>
-                </div>
+                <div class="captain-info__badge"><i class="fas fa-crown"></i></div>
                 <h4 class="captain-info__title">Kapiten</h4>
-                <p class="captain-info__name">Benjamin Tatar</p>
-                <p class="captain-info__points">Poeni: +35 (×2)</p>
+                <p class="captain-info__name">{{ captain.first_name }} {{ captain.last_name }}</p>
+                <p class="captain-info__points">{{ captain.team_short }}</p>
             </div>
+            {% endif %}
+            {% if vice_captain %}
             <div class="captain-info__card">
-                <div class="captain-info__badge captain-info__badge--vice">
-                    <i class="fas fa-star"></i>
-                </div>
+                <div class="captain-info__badge captain-info__badge--vice"><i class="fas fa-star"></i></div>
                 <h4 class="captain-info__title">Potkapiten</h4>
-                <p class="captain-info__name">Stefan Ristovski</p>
-                <p class="captain-info__points">Poeni: +12 (×1.5)</p>
+                <p class="captain-info__name">{{ vice_captain.first_name }} {{ vice_captain.last_name }}</p>
+                <p class="captain-info__points">{{ vice_captain.team_short }}</p>
             </div>
+            {% endif %}
         </div>
+        {% endif %}
 
     </div>
 </div>
-
 {% endblock %}
 
 {% block extra_js %}
+<script id="starting-data" type="application/json">{{ starting | tojson }}</script>
+<script id="bench-data" type="application/json">{{ bench | tojson }}</script>
 <script src="{{ url_for('static', filename='js/formation-selector.js') }}"></script>
+<script src="{{ url_for('static', filename='js/my_team.js') }}"></script>
 {% endblock %}

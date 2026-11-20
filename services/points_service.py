@@ -32,7 +32,7 @@ def calculate_player_points(stats, position):
         elif position == 'MID':
             points += 2
 
-    # Saves
+    # Saves (GK only)
     if position == 'GK':
         points += (stats['saves'] // 3) * 2
 
@@ -43,16 +43,19 @@ def calculate_player_points(stats, position):
     return points
 
 
-def calculate_fantasy_team_points(fantasy_players, gameweek_stats):
+def calculate_fantasy_team_points(fantasy_players, gameweek_stats, chip=None):
     total_points = 0
 
-    captain = next((p for p in fantasy_players if p['is_captain']), None)
+    bench_boost   = chip == 'bench_boost'
+    triple_captain = chip == 'triple_captain'
+
+    captain      = next((p for p in fantasy_players if p['is_captain']), None)
     vice_captain = next((p for p in fantasy_players if p['is_vice_captain']), None)
 
     captain_played = False
     if captain:
-        captain_stats = gameweek_stats.get(captain['player_id'])
-        if captain_stats and captain_stats['minutes_played'] > 0:
+        cap_stats = gameweek_stats.get(captain['player_id'])
+        if cap_stats and cap_stats['minutes_played'] > 0:
             captain_played = True
 
     vice_captain_played = False
@@ -62,31 +65,35 @@ def calculate_fantasy_team_points(fantasy_players, gameweek_stats):
             vice_captain_played = True
 
     for fp in fantasy_players:
-        if not fp['is_starting']:
+
+        # Bench boost
+        if not bench_boost and not fp['is_starting']:
             continue
 
         player_id = fp['player_id']
-        position = fp['position']
-        stats = gameweek_stats.get(player_id)
+        position  = fp['position']
+        stats     = gameweek_stats.get(player_id)
 
         if not stats or stats['minutes_played'] == 0:
-                continue
+            continue
 
         player_points = calculate_player_points(stats, position)
 
         if fp['is_captain']:
             if captain_played:
-                player_points *= 2
+                multiplier = 3 if triple_captain else 2
+                player_points *= multiplier
             else:
                 player_points = 0
 
         elif fp['is_vice_captain']:
             if not captain_played:
                 if vice_captain_played:
-                    player_points *= 2
+                    multiplier = 3 if triple_captain else 2
+                    player_points *= multiplier
                 else:
                     player_points = 0
-        
+
         total_points += player_points
 
     return total_points

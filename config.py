@@ -27,3 +27,12 @@ config = {
     'production': ProductionConfig,
     'default': DevelopmentConfig
 }
+
+class TestingConfig(Config):
+    TESTING = True
+    DEBUG = True
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
+    WTF_CSRF_ENABLED = False
+    SECRET_KEY = 'test-secret-key'
+
+config['testing'] = TestingConfig
